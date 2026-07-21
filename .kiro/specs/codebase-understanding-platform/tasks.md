@@ -10,7 +10,7 @@ The implementation language is **TypeScript** (Node.js + Express backend, React 
 
 ## Tasks
 
-- [ ] 1. Project scaffolding and shared types
+- [x] 1. Project scaffolding and shared types
   - Create monorepo structure with `backend/` and `frontend/` directories
   - Initialize `backend/` as a Node.js/TypeScript project (`tsconfig.json`, `package.json`, Jest config)
   - Initialize `frontend/` as a Vite + React + TypeScript project
@@ -19,8 +19,8 @@ The implementation language is **TypeScript** (Node.js + Express backend, React 
   - Install frontend dependencies: `axios`, `react-router-dom`, `d3` (or `react-force-graph`)
   - _Requirements: 7.2, 14.3_
 
-- [ ] 2. Repository Engine
-  - [ ] 2.1 Implement `RepositoryEngine` in `backend/src/engine/repository-engine.ts`
+- [-] 2. Repository Engine
+  - [x] 2.1 Implement `RepositoryEngine` in `backend/src/engine/repository-engine.ts`
     - Validate ZIP magic bytes and reject non-ZIP buffers with `INVALID_FORMAT` error
     - Validate file size ≤ 200 MB and reject oversized uploads with `FILE_TOO_LARGE` error
     - Extract ZIP contents using `adm-zip`, build `FileEntry[]` from all extracted paths and contents
@@ -28,7 +28,7 @@ The implementation language is **TypeScript** (Node.js + Express backend, React 
     - Return a `RepositoryTree` with `rootPath`, `files`, and `packageJson`
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ]* 2.2 Write property tests for Repository Engine
+  - [ ] 2.2 Write property tests for Repository Engine
     - **Property 1: Valid ZIP file tree extraction** — generate in-memory ZIP buffers with random file sets, verify `files` array matches
     - **Property 2: Non-ZIP rejection** — generate random byte arrays, verify error returned
     - **Property 3: package.json round-trip** — generate random `{name, version, description, dependencies}`, verify extraction
@@ -279,6 +279,25 @@ The implementation language is **TypeScript** (Node.js + Express backend, React 
 
 - [ ] 23. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
+
+---
+
+## Task Dependency Graph
+
+```json
+{
+  "waves": [
+    { "id": 0, "tasks": ["1"] },
+    { "id": 1, "tasks": ["2.1", "2.2", "3.1", "3.2", "3.3"] },
+    { "id": 2, "tasks": ["4", "4.1", "5", "5.1", "6", "6.1", "7", "7.1", "8", "8.1"] },
+    { "id": 3, "tasks": ["10.1", "10.2"] },
+    { "id": 4, "tasks": ["11"] },
+    { "id": 5, "tasks": ["12.1", "12.2", "12.3", "13.1", "13.2", "13.3"] },
+    { "id": 6, "tasks": ["15", "16", "17", "17.1", "18", "19", "20", "21"] },
+    { "id": 7, "tasks": ["22.1", "22.2", "22.3"] }
+  ]
+}
+```
 
 ---
 
