@@ -1,0 +1,54 @@
+# ─── Dependencies ────────────────────────────────────────────────────────────
+node_modules/
+
+# ─── Build output ────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+
+# ─── TypeScript cache / incremental builds ───────────────────────────────────
+*.tsbuildinfo
+
+# ─── Vite ────────────────────────────────────────────────────────────────────
+frontend/.vite/
+
+# ─── Jest / test coverage ────────────────────────────────────────────────────
+coverage/
+*.lcov
+.nyc_output/
+
+# ─── Environment variables ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── OS / editor artefacts ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.directory
+
+# ─── IDEs ────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── Temporary / misc ────────────────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
