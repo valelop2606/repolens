@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto Commit on Task Completion",
+      "trigger": "PostTaskExec",
+      "action": {
+        "type": "agent",
+        "prompt": "A spec task has just been completed. Your job now is to:\n1. Run `git status` to see what files changed.\n2. Stage the relevant changed files with `git add` (prefer specific files over `git add .`).\n3. Write a descriptive commit message that summarizes what was implemented in this task (use conventional commit format when appropriate, e.g. feat:, fix:, refactor:).\n4. Create the commit automatically — do NOT ask for permission to commit.\n5. After committing, ask the user: \"Task committed. Would you like me to push to the remote branch?\"\n6. Only push if the user explicitly says yes."
+      }
+    }
+  ]
+}
