@@ -21,8 +21,14 @@ export class StorageService {
   private readonly bucket: string;
 
   constructor(private readonly config: ConfigService) {
+    const accessKeyId = this.config.get<string>('aws.accessKeyId', '');
+    const secretAccessKey = this.config.get<string>('aws.secretAccessKey', '');
+
     this.client = new S3Client({
       region: this.config.get<string>('aws.region', 'us-east-1'),
+      ...(accessKeyId && secretAccessKey
+        ? { credentials: { accessKeyId, secretAccessKey } }
+        : {}),
     });
     this.bucket = this.config.get<string>('aws.s3.bucket', 'codebase-understanding-uploads');
   }
@@ -46,7 +52,7 @@ export class StorageService {
   /**
    * Generate a pre-signed GET URL valid for the given number of seconds.
    */
-  async getSignedDownloadUrl(key: string, expiresInSeconds = 3600): Promise<string> {
+  async getSignedUrl(key: string, expiresInSeconds = 3600): Promise<string> {
     return getSignedUrl(
       this.client,
       new GetObjectCommand({ Bucket: this.bucket, Key: key }),
