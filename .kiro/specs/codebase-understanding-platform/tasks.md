@@ -56,7 +56,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - _Requirements: 14.2, 14.4, 14.5_
 
 
-- [ ] 4. Technology Detection Analyzer
+- [x] 4. Technology Detection Analyzer
   - Implement `TechDetectionAnalyzer` in `backend/src/modules/analysis/analyzers/tech-detection.analyzer.ts`
   - `detect()` always returns `true` (applicable to all repos)
   - `analyze()` inspects `packageJson.dependencies` + `devDependencies`, file extensions (`.tsx`, `.ts`, `.py`, `.java`), and presence of config files (`tsconfig.json`, `vite.config.ts`, `nest-cli.json`) to produce a `Technology[]`
@@ -65,12 +65,12 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Detect AWS Bedrock (`@aws-sdk/client-bedrock-runtime`) and AWS S3 (`@aws-sdk/client-s3`) as first-class technologies
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ]* 4.1 Write property tests for TechDetectionAnalyzer
+  - [x] 4.1 Write property tests for TechDetectionAnalyzer
     - **Property 4: Technology detection coverage** — generate `RepositoryTree` objects with random subsets of known dependency markers, verify detected set is correct and every entry has valid `name` and `confidence`
     - `// Feature: codebase-understanding-platform, Property 4`
     - _Requirements: 2.1–2.5_
 
-- [ ] 5. Module Analyzer
+- [x] 5. Module Analyzer
   - Implement `ModuleAnalyzer` in `backend/src/modules/analysis/analyzers/module.analyzer.ts`
   - `detect()` returns `true` if any files exist
   - `analyze()` groups files by top-level directory; treats directories containing `index.ts` or `index.js` as module boundaries
@@ -79,7 +79,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Return `modules`, `dependencyEdges`, and circular dependency `warnings`
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ]* 5.1 Write property tests for ModuleAnalyzer
+  - [ ] 5.1 Write property tests for ModuleAnalyzer
     - **Property 5: Index-file module detection and completeness** — generate directory trees with random numbers of index files, verify a module record exists for each with all required fields
     - **Property 6: Dependency graph edge completeness** — generate file trees with known import chains, verify edges are present
     - `// Feature: codebase-understanding-platform, Property 5, 6`
@@ -95,7 +95,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - If no routes found, return empty `endpoints` array
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ]* 6.1 Write property tests for NestjsEndpointAnalyzer
+  - [ ] 6.1 Write property tests for NestjsEndpointAnalyzer
     - **Property 7: Route extraction and endpoint structure completeness** — generate NestJS controller source strings with random route definitions, verify each produces a complete `Endpoint` record
     - `// Feature: codebase-understanding-platform, Property 7`
     - _Requirements: 4.1–4.3_
@@ -110,7 +110,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Skip files with no recognizable component exports without recording errors
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-  - [ ]* 7.1 Write property tests for ReactComponentAnalyzer
+  - [ ] 7.1 Write property tests for ReactComponentAnalyzer
     - **Property 8: Component detection and record completeness** — generate JSX/TSX source strings with random component names and types, verify records have all required fields
     - **Property 9: API call recording** — generate components with random fetch/axios URLs, verify URL appears in `apiCalls`
     - **Property 10: Parent-child relationship recording** — generate chains of component imports, verify bidirectional relationship entries
@@ -126,7 +126,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - If no models found, return empty `entities` array
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ]* 8.1 Write property tests for DatabaseEntityAnalyzer
+  - [ ] 8.1 Write property tests for DatabaseEntityAnalyzer
     - **Property 11: ORM entity extraction and record completeness** — generate Mongoose schema strings with random field sets, verify entity records have all required fields
     - **Property 12: Entity relationship recording** — generate entity definitions with random relationship declarations, verify each relationship appears in the output
     - `// Feature: codebase-understanding-platform, Property 11, 12`
@@ -150,7 +150,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - `getModules`, `getEndpoints`, `getComponents`, `getEntities`: convenience methods returning sub-arrays from the KB
     - _Requirements: 7.3, 7.4_
 
-  - [ ]* 10.3 Write property tests for KnowledgeBuilder
+  - [ ] 10.3 Write property tests for KnowledgeBuilder
     - **Property 13: KB assembly completeness** — generate random sets of partial results, verify assembled KB has all top-level keys with correct types
     - **Property 14: Metadata extraction** — generate `RepositoryTree` with random `package.json` content, verify `metadata.name`, `version`, `description`, and `hasPackageJson` are correctly derived
     - **Property 15: Session isolation** — verify two `assemble` calls produce different `sessionId` UUIDs
@@ -212,7 +212,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Register `DocumentationModule` in `AppModule`
     - _Requirements: 13.5_
 
-  - [ ]* 13.3 Write property tests for DocumentationGenerator
+  - [ ] 13.3 Write property tests for DocumentationGenerator
     - **Property 18: Documentation generation completeness** — generate KBs with random combinations of data presence/absence, verify each generator returns a non-empty string containing required section headers
     - `// Feature: codebase-understanding-platform, Property 18`
     - _Requirements: 13.1–13.5_
@@ -237,7 +237,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Register `ChatModule` in `AppModule`
     - _Requirements: 12.1_
 
-  - [ ]* 14.3 Write property tests for ChatService
+  - [ ] 14.3 Write property tests for ChatService
     - **Property 17: Conversation context window** — generate message arrays of length 1–15, verify `buildPrompt` includes exactly `min(length, 10)` messages in the prompt string
     - `// Feature: codebase-understanding-platform, Property 17`
     - _Requirements: 12.5_
@@ -273,7 +273,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Clicking a stage marks it as completed and advances the progress indicator
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [ ]* 18.1 Write unit tests for Learning Journey progress calculation
+  - [ ] 18.1 Write unit tests for Learning Journey progress calculation
     - **Property 16: Progress percentage accuracy** — generate integers 0 ≤ N ≤ 8, verify progress display matches `Math.round((N / 8) * 100)`
     - `// Feature: codebase-understanding-platform, Property 16`
     - _Requirements: 9.4_
@@ -321,7 +321,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Instantiate and pass `TechDetectionAnalyzer`, `ModuleAnalyzer`, `NestjsEndpointAnalyzer`, `ReactComponentAnalyzer`, `DatabaseEntityAnalyzer` to `AnalysisEngine`
     - _Requirements: 14.1, 14.2_
 
-  - [ ]* 23.3 Write backend integration tests
+  - [ ] 23.3 Write backend integration tests
     - Upload a fixture ZIP containing a small NestJS + React + Mongoose sample project
     - Verify session is created; KB contains expected technologies, modules, endpoints, components, and entities
     - Verify all four documentation download routes return `Content-Type: text/markdown` with correct `Content-Disposition` headers
