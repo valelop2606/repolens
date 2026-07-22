@@ -11,25 +11,25 @@ export type ProjectDocument = HydratedDocument<Project>;
 @Schema({ timestamps: true })
 export class Project {
   @Prop({ required: true })
-  name: string;
+  name!: string;
 
   @Prop({ default: '' })
-  description: string;
+  description!: string;
 
   @Prop({ required: true, enum: ['pending', 'processing', 'completed', 'failed'] })
-  status: AnalysisStatus;
+  status!: AnalysisStatus;
 
-  @Prop({ default: null })
-  s3UploadKey: string | null;
+  @Prop({ type: String, default: null })
+  s3UploadKey!: string | null;
 
-  @Prop({ default: null })
-  knowledgeBaseId: string | null;
+  @Prop({ type: String, default: null })
+  knowledgeBaseId!: string | null;
 
-  @Prop({ default: [] })
-  technologies: string[];
+  @Prop({ type: [String], default: [] })
+  technologies!: string[];
 
-  @Prop({ default: null })
-  errorMessage: string | null;
+  @Prop({ type: String, default: null })
+  errorMessage!: string | null;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

@@ -3,6 +3,10 @@ import { RepositoryLoader, RepositoryLoaderError } from './pipeline/repository-l
 import { AnalysisEngine } from './pipeline/analysis-engine';
 import { KnowledgeBuilder } from './pipeline/knowledge-builder';
 import { TechDetectionAnalyzer } from './analyzers/tech-detection.analyzer';
+import { ModuleAnalyzer } from './analyzers/module.analyzer';
+import { NestjsEndpointAnalyzer } from './analyzers/nestjs-endpoint.analyzer';
+import { ReactComponentAnalyzer } from './analyzers/react-component.analyzer';
+import { DatabaseEntityAnalyzer } from './analyzers/database-entity.analyzer';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { ProjectsService } from '../projects/projects.service';
 import { KnowledgeBase } from '../../shared/types';
@@ -26,7 +30,10 @@ export class AnalysisService {
   private readonly loader = new RepositoryLoader();
   private readonly engine = new AnalysisEngine([
     new TechDetectionAnalyzer(),
-    // Future analyzers are registered here (e.g. ModuleAnalyzer, ReactComponentAnalyzer)
+    new ModuleAnalyzer(),
+    new NestjsEndpointAnalyzer(),
+    new ReactComponentAnalyzer(),
+    new DatabaseEntityAnalyzer(),
   ]);
   private readonly builder = new KnowledgeBuilder();
 

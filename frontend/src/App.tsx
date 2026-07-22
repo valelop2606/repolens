@@ -7,14 +7,8 @@ import UnderstandView from './features/dashboard/pages/UnderstandView';
 import LearningJourneyView from './features/journey/pages/LearningJourneyView';
 import ExplorerView from './features/explore/pages/ExplorerView';
 import FeatureFlowView from './features/explore/pages/FeatureFlowView';
-
-// Placeholder for nested session views — replaced in subsequent tasks
-const Placeholder: React.FC<{ title: string }> = ({ title }) => (
-  <div>
-    <h2>{title}</h2>
-    <p>This view will be implemented in a future task.</p>
-  </div>
-);
+import AIAssistantView from './features/chat/pages/AIAssistantView';
+import DocsView from './features/documentation/pages/DocsView';
 
 const App: React.FC = () => {
   return (
@@ -28,8 +22,8 @@ const App: React.FC = () => {
             <Route path="journey" element={<LearningJourneyView />} />
             <Route path="explore" element={<ExplorerView />} />
             <Route path="feature-flow" element={<FeatureFlowView />} />
-            <Route path="assistant" element={<Placeholder title="AI Assistant" />} />
-            <Route path="docs" element={<Placeholder title="Docs" />} />
+            <Route path="assistant" element={<AIAssistantView />} />
+            <Route path="docs" element={<DocsView />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
