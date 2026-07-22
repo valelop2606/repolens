@@ -10,43 +10,43 @@ export type KnowledgeBaseDocument = HydratedDocument<KnowledgeBaseRecord>;
 @Schema({ timestamps: true })
 export class KnowledgeBaseRecord {
   @Prop({ required: true, unique: true })
-  sessionId: string;
+  sessionId!: string;
 
   @Prop({ required: true })
-  projectId: string;
+  projectId!: string;
 
   @Prop({ type: Object, required: true })
-  metadata: Record<string, unknown>;
+  metadata!: Record<string, unknown>;
 
   @Prop({ type: Array, default: [] })
-  technologies: unknown[];
+  technologies!: unknown[];
 
   @Prop({ type: Array, default: [] })
-  modules: unknown[];
+  modules!: unknown[];
 
   @Prop({ type: Array, default: [] })
-  endpoints: unknown[];
+  endpoints!: unknown[];
 
   @Prop({ type: Array, default: [] })
-  components: unknown[];
+  components!: unknown[];
 
   @Prop({ type: Array, default: [] })
-  entities: unknown[];
+  entities!: unknown[];
 
   @Prop({ type: Object, default: { nodes: [], edges: [] } })
-  dependencyGraph: Record<string, unknown>;
+  dependencyGraph!: Record<string, unknown>;
 
   @Prop({ type: Array, default: [] })
-  featureFlows: unknown[];
+  featureFlows!: unknown[];
 
   @Prop({ type: Array, default: [] })
-  warnings: unknown[];
+  warnings!: unknown[];
 
   @Prop({ default: false })
-  isComplete: boolean;
+  isComplete!: boolean;
 
   @Prop({ required: true })
-  createdAt: Date;
+  createdAt!: Date;
 }
 
 export const KnowledgeBaseSchema = SchemaFactory.createForClass(KnowledgeBaseRecord);

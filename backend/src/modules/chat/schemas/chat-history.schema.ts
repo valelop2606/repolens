@@ -6,10 +6,10 @@ export type ChatHistoryDocument = HydratedDocument<ChatHistory>;
 @Schema({ timestamps: true })
 export class ChatHistory {
   @Prop({ required: true })
-  sessionId: string;
+  sessionId!: string;
 
   @Prop({ required: true })
-  projectId: string;
+  projectId!: string;
 
   @Prop({
     type: [
@@ -21,7 +21,7 @@ export class ChatHistory {
     ],
     default: [],
   })
-  messages: Array<{ role: 'user' | 'assistant'; content: string; timestamp: Date }>;
+  messages!: Array<{ role: 'user' | 'assistant'; content: string; timestamp: Date }>;
 }
 
 export const ChatHistorySchema = SchemaFactory.createForClass(ChatHistory);

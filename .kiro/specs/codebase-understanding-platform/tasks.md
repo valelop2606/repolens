@@ -79,13 +79,13 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Return `modules`, `dependencyEdges`, and circular dependency `warnings`
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 5.1 Write property tests for ModuleAnalyzer
+  - [x] 5.1 Write property tests for ModuleAnalyzer
     - **Property 5: Index-file module detection and completeness** — generate directory trees with random numbers of index files, verify a module record exists for each with all required fields
     - **Property 6: Dependency graph edge completeness** — generate file trees with known import chains, verify edges are present
     - `// Feature: codebase-understanding-platform, Property 5, 6`
     - _Requirements: 3.2, 3.3, 3.5_
 
-- [ ] 6. NestJS Endpoint Analyzer
+- [x] 6. NestJS Endpoint Analyzer
   - Implement `NestjsEndpointAnalyzer` in `backend/src/modules/analysis/analyzers/nestjs-endpoint.analyzer.ts`
   - `detect()` returns `true` when `@nestjs/common` is in `packageJson.dependencies`
   - `analyze()` scans source files for NestJS controller decorators: `@Get`, `@Post`, `@Put`, `@Patch`, `@Delete`
@@ -95,12 +95,12 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - If no routes found, return empty `endpoints` array
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 6.1 Write property tests for NestjsEndpointAnalyzer
+  - [x] 6.1 Write property tests for NestjsEndpointAnalyzer
     - **Property 7: Route extraction and endpoint structure completeness** — generate NestJS controller source strings with random route definitions, verify each produces a complete `Endpoint` record
     - `// Feature: codebase-understanding-platform, Property 7`
     - _Requirements: 4.1–4.3_
 
-- [ ] 7. React Component Analyzer
+- [x] 7. React Component Analyzer
   - Implement `ReactComponentAnalyzer` in `backend/src/modules/analysis/analyzers/react-component.analyzer.ts`
   - `detect()` returns `true` when JSX or TSX files exist
   - `analyze()` scans JSX/TSX files for exported functional components (arrow functions and `function` declarations) and class components extending `React.Component`
@@ -110,14 +110,14 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - Skip files with no recognizable component exports without recording errors
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-  - [ ] 7.1 Write property tests for ReactComponentAnalyzer
+  - [x] 7.1 Write property tests for ReactComponentAnalyzer
     - **Property 8: Component detection and record completeness** — generate JSX/TSX source strings with random component names and types, verify records have all required fields
     - **Property 9: API call recording** — generate components with random fetch/axios URLs, verify URL appears in `apiCalls`
     - **Property 10: Parent-child relationship recording** — generate chains of component imports, verify bidirectional relationship entries
     - `// Feature: codebase-understanding-platform, Property 8, 9, 10`
     - _Requirements: 5.1–5.4_
 
-- [ ] 8. Database Entity Analyzer
+- [x] 8. Database Entity Analyzer
   - Implement `DatabaseEntityAnalyzer` in `backend/src/modules/analysis/analyzers/database-entity.analyzer.ts`
   - `detect()` returns `true` when `mongoose` or `sequelize` appear in `packageJson.dependencies`
   - `analyze()` scans source files for Mongoose `@Schema` / `new Schema({...})` and Sequelize model definitions
@@ -126,23 +126,23 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
   - If no models found, return empty `entities` array
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 8.1 Write property tests for DatabaseEntityAnalyzer
+  - [x] 8.1 Write property tests for DatabaseEntityAnalyzer
     - **Property 11: ORM entity extraction and record completeness** — generate Mongoose schema strings with random field sets, verify entity records have all required fields
     - **Property 12: Entity relationship recording** — generate entity definitions with random relationship declarations, verify each relationship appears in the output
     - `// Feature: codebase-understanding-platform, Property 11, 12`
     - _Requirements: 6.1–6.4_
 
-- [ ] 9. Checkpoint — Ensure all analyzer unit and property tests pass
+- [x] 9. Checkpoint — Ensure all analyzer unit and property tests pass
   - Run `npm test` in `backend/` and verify all tests pass; ask the user if any questions arise
 
 
-- [ ] 10. KnowledgeBuilder and MongoDB persistence
-  - [ ] 10.1 Implement `KnowledgeBuilder` in `backend/src/modules/analysis/pipeline/knowledge-builder.ts`
+- [x] 10. KnowledgeBuilder and MongoDB persistence
+  - [x] 10.1 Implement `KnowledgeBuilder` in `backend/src/modules/analysis/pipeline/knowledge-builder.ts`
     - `assemble(partials, repo, projectId)`: merge all partial results into a single `KnowledgeBase`; set layer-absent behavior when endpoint/component/entity lists are empty; derive `metadata` from `repo.packageJson`; generate a UUID `sessionId`; set `createdAt` to `new Date()`
     - Wrap `assemble` in try/catch; on fatal error, throw with error details
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 10.2 Implement `KnowledgeService` in `backend/src/modules/knowledge/knowledge.service.ts`
+  - [x] 10.2 Implement `KnowledgeService` in `backend/src/modules/knowledge/knowledge.service.ts`
     - Inject Mongoose `Model<KnowledgeBaseDocument>` using `@InjectModel`
     - `save(kb)`: persist KB to MongoDB `knowledge_base` collection; return saved document
     - `findBySession(sessionId)`: query by `sessionId`; throw `NotFoundException` if not found; use `.lean()` for read performance
@@ -150,15 +150,15 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - `getModules`, `getEndpoints`, `getComponents`, `getEntities`: convenience methods returning sub-arrays from the KB
     - _Requirements: 7.3, 7.4_
 
-  - [ ] 10.3 Write property tests for KnowledgeBuilder
+  - [x] 10.3 Write property tests for KnowledgeBuilder
     - **Property 13: KB assembly completeness** — generate random sets of partial results, verify assembled KB has all top-level keys with correct types
     - **Property 14: Metadata extraction** — generate `RepositoryTree` with random `package.json` content, verify `metadata.name`, `version`, `description`, and `hasPackageJson` are correctly derived
     - **Property 15: Session isolation** — verify two `assemble` calls produce different `sessionId` UUIDs
     - `// Feature: codebase-understanding-platform, Property 13, 14, 15`
     - _Requirements: 7.1–7.4_
 
-- [ ] 11. Projects module and analysis pipeline wiring
-  - [ ] 11.1 Implement `ProjectsService` in `backend/src/modules/projects/projects.service.ts`
+- [x] 11. Projects module and analysis pipeline wiring
+  - [x] 11.1 Implement `ProjectsService` in `backend/src/modules/projects/projects.service.ts`
     - Inject `Model<ProjectDocument>` using `@InjectModel`
     - `create(dto)`: create a project with `status: "pending"`, empty `technologies`, `null` for `s3UploadKey`, `knowledgeBaseId`, `errorMessage`
     - `findAll()`: return all projects sorted by `createdAt` descending
@@ -167,21 +167,21 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - `delete(id)`: hard delete; throw `NotFoundException` if absent
     - _Requirements: 8.1, 8.2_
 
-  - [ ] 11.2 Implement `AnalysisService` in `backend/src/modules/analysis/analysis.service.ts`
+  - [x] 11.2 Implement `AnalysisService` in `backend/src/modules/analysis/analysis.service.ts`
     - Orchestrate the full pipeline: `RepositoryLoader` → `AnalysisEngine` → `KnowledgeBuilder` → `KnowledgeService.save()`
     - Mark project `processing` before analysis starts; `completed` (with `knowledgeBaseId` and `technologies`) on success; `failed` (with `errorMessage`) on exception
     - Re-throw `RepositoryLoaderError` as NestJS `BadRequestException` with `{ code, message }` body
     - Register `TechDetectionAnalyzer` in the `AnalysisEngine` constructor; add a comment noting where future analyzers are registered
     - _Requirements: 1.1–1.5, 7.3_
 
-  - [ ] 11.3 Implement REST controllers
+  - [x] 11.3 Implement REST controllers
     - `ProjectsController` (`@Controller('projects')`): `POST /api/projects` → create; `GET /api/projects` → list; `GET /api/projects/:id` → single; `DELETE /api/projects/:id` → remove
     - `AnalysisController` (`@Controller('projects/:projectId/analyze')`): `POST /api/projects/:projectId/analyze` — accept multipart `repository` field (ZIP, 200 MB limit via `FileInterceptor` + `ParseFilePipe`); call `AnalysisService.analyzeRepository()`; return `{ sessionId, projectId }` with HTTP 202
     - `KnowledgeController` (`@Controller('sessions')`): `GET /api/sessions/:id` → full KB; `GET /api/sessions/:id/modules`; `GET /api/sessions/:id/endpoints`; `GET /api/sessions/:id/components`; `GET /api/sessions/:id/entities`
     - All business logic stays in services; controllers handle HTTP concerns only
     - _Requirements: 1.1–1.5, 7.3, 7.4_
 
-- [ ] 12. AWS S3 storage abstraction
+- [x] 12. AWS S3 storage abstraction
   - Implement `StorageService` in `backend/src/shared/services/storage.service.ts`
     - Inject `ConfigService` to read `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`
     - `upload(key, buffer, contentType)`: upload buffer to S3 using `PutObjectCommand`; return the S3 key
@@ -191,8 +191,8 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Define `aws.config` in `backend/src/shared/config/aws.config.ts` using `registerAs` from `@nestjs/config`
     - _Requirements: (AWS S3 rule from engineering standards)_
 
-- [ ] 13. Documentation module
-  - [ ] 13.1 Implement `DocumentationGenerator` in `backend/src/modules/documentation/documentation.generator.ts`
+- [x] 13. Documentation module
+  - [x] 13.1 Implement `DocumentationGenerator` in `backend/src/modules/documentation/documentation.generator.ts`
     - `generateReadme(kb)`: produce Markdown with project name, description, technology stack badges, and module list
     - `generateArchitectureSummary(kb)`: produce Markdown listing all modules with their descriptions and dependency edges
     - `generateApiDocs(kb)`: produce Markdown table of all endpoints (method, path, middleware, service); emit "No endpoints detected" section when list is empty
@@ -200,7 +200,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - All methods return `string`; no async required
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-  - [ ] 13.2 Create `DocumentationModule` and controller
+  - [x] 13.2 Create `DocumentationModule` and controller
     - Wire `DocumentationGenerator` as a provider in `DocumentationModule`
     - Import `KnowledgeModule` to access `KnowledgeService`
     - `DocumentationController` (`@Controller('sessions/:id/docs')`):
@@ -212,14 +212,14 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Register `DocumentationModule` in `AppModule`
     - _Requirements: 13.5_
 
-  - [ ] 13.3 Write property tests for DocumentationGenerator
+  - [x] 13.3 Write property tests for DocumentationGenerator
     - **Property 18: Documentation generation completeness** — generate KBs with random combinations of data presence/absence, verify each generator returns a non-empty string containing required section headers
     - `// Feature: codebase-understanding-platform, Property 18`
     - _Requirements: 13.1–13.5_
 
 
-- [ ] 14. AI Assistant (AWS Bedrock)
-  - [ ] 14.1 Implement `ChatService` in `backend/src/modules/chat/chat.service.ts`
+- [x] 14. AI Assistant (AWS Bedrock)
+  - [x] 14.1 Implement `ChatService` in `backend/src/modules/chat/chat.service.ts`
     - Inject `ConfigService` and `KnowledgeService`
     - Use `BedrockRuntimeClient` from `@aws-sdk/client-bedrock-runtime` (inject client for testability)
     - `buildPrompt(kb, history, question)`: serialize relevant KB sections (technologies, modules, endpoints, components, entities) as JSON into a system prompt; append the last `Math.min(history.length, 10)` messages as conversation history; append the new user question
@@ -228,7 +228,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - `saveHistory(sessionId, projectId, messages)`: persist conversation to `ChatHistory` MongoDB collection
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
 
-  - [ ] 14.2 Create `ChatModule` and controller
+  - [x] 14.2 Create `ChatModule` and controller
     - Wire `ChatService` and `ChatHistory` Mongoose schema in `ChatModule`
     - Import `KnowledgeModule` to expose `KnowledgeService`
     - `ChatController` (`@Controller('sessions/:id/chat')`):
@@ -237,7 +237,7 @@ The implementation language is **TypeScript** using **NestJS** (backend) and **R
     - Register `ChatModule` in `AppModule`
     - _Requirements: 12.1_
 
-  - [ ] 14.3 Write property tests for ChatService
+  - [x] 14.3 Write property tests for ChatService
     - **Property 17: Conversation context window** — generate message arrays of length 1–15, verify `buildPrompt` includes exactly `min(length, 10)` messages in the prompt string
     - `// Feature: codebase-understanding-platform, Property 17`
     - _Requirements: 12.5_
