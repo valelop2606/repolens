@@ -1,0 +1,8 @@
+/**
+ * Calculates progress percentage based on completed and total stages.
+ * Returns an integer percentage using Math.round.
+ */
+export function calculateProgress(completed: number, total: number): number {
+  if (total === 0) return 0;
+  return Math.round((completed / total) * 100);
+}
