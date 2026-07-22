@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
+  AnalysisWarning,
   KnowledgeBase,
   PartialAnalysisResult,
   RepositoryTree,
@@ -23,36 +24,72 @@ export class KnowledgeBuilder {
     repo: RepositoryTree,
     projectId: string,
   ): KnowledgeBase {
-    const technologies = partials.flatMap((p) => p.technologies ?? []);
-    const modules = partials.flatMap((p) => p.modules ?? []);
-    const endpoints = partials.flatMap((p) => p.endpoints ?? []);
-    const components = partials.flatMap((p) => p.components ?? []);
-    const entities = partials.flatMap((p) => p.entities ?? []);
-    const dependencyEdges = partials.flatMap((p) => p.dependencyEdges ?? []);
-    const warnings = partials.flatMap((p) => p.warnings ?? []);
+    try {
+      const technologies = partials.flatMap((p) => p.technologies ?? []);
+      const modules = partials.flatMap((p) => p.modules ?? []);
+      const endpoints = partials.flatMap((p) => p.endpoints ?? []);
+      const components = partials.flatMap((p) => p.components ?? []);
+      const entities = partials.flatMap((p) => p.entities ?? []);
+      const dependencyEdges = partials.flatMap((p) => p.dependencyEdges ?? []);
+      const warnings: AnalysisWarning[] = partials.flatMap(
+        (p) => p.warnings ?? [],
+      );
 
-    const metadata = this._buildMetadata(repo);
+      // Layer-absent behavior: add informational warnings when layers are empty
+      if (endpoints.length === 0) {
+        warnings.push({
+          code: 'LAYER_ABSENT',
+          message: 'No backend endpoints detected',
+          file: null,
+          severity: 'info',
+        });
+      }
 
-    const dependencyGraph: DependencyGraph = {
-      nodes: modules.map((m) => m.id),
-      edges: dependencyEdges,
-    };
+      if (components.length === 0) {
+        warnings.push({
+          code: 'LAYER_ABSENT',
+          message: 'No frontend components detected',
+          file: null,
+          severity: 'info',
+        });
+      }
 
-    return {
-      sessionId: uuidv4(),
-      projectId,
-      createdAt: new Date(),
-      metadata,
-      technologies,
-      modules,
-      endpoints,
-      components,
-      entities,
-      dependencyGraph,
-      featureFlows: [],
-      warnings,
-      isComplete: true,
-    };
+      if (entities.length === 0) {
+        warnings.push({
+          code: 'LAYER_ABSENT',
+          message: 'No database entities detected',
+          file: null,
+          severity: 'info',
+        });
+      }
+
+      const metadata = this._buildMetadata(repo);
+
+      const dependencyGraph: DependencyGraph = {
+        nodes: modules.map((m) => m.id),
+        edges: dependencyEdges,
+      };
+
+      return {
+        sessionId: uuidv4(),
+        projectId,
+        createdAt: new Date(),
+        metadata,
+        technologies,
+        modules,
+        endpoints,
+        components,
+        entities,
+        dependencyGraph,
+        featureFlows: [],
+        warnings,
+        isComplete: true,
+      };
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : String(error);
+      throw new Error(`Knowledge Base assembly failed: ${message}`);
+    }
   }
 
   private _buildMetadata(repo: RepositoryTree): ProjectMetadata {
