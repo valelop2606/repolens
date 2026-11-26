@@ -21,7 +21,7 @@ import { KnowledgeBase } from '../../shared/types';
  *     → KnowledgeBuilder    (Stage 5 — assemble KB)
  *     → KnowledgeService    (persist to MongoDB)
  *
- * Architectural rule: AI (Bedrock) receives the *completed KB*, not the raw repo.
+ * Architectural rule: the LLM receives the *completed KB*, not the raw repo.
  */
 @Injectable()
 export class AnalysisService {

@@ -30,7 +30,7 @@ import { DocumentationModule } from './modules/documentation/documentation.modul
       }),
     }),
 
-    // Shared infrastructure (global: StorageService available everywhere)
+    // Shared infrastructure (global providers)
     SharedModule,
 
     // Domain modules

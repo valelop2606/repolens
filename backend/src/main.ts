@@ -17,9 +17,9 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  // Enable CORS for the frontend dev server
+  // CORS: FRONTEND_URL accepts a comma-separated list of origins
   app.enableCors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+    origin: (process.env.FRONTEND_URL ?? 'http://localhost:5173').split(',').map((o) => o.trim()),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   });
