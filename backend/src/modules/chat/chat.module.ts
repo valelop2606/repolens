@@ -20,7 +20,7 @@ import { GeminiClient, LLM_CLIENT } from './llm.client';
       useFactory: (config: ConfigService) =>
         new GeminiClient(
           config.get<string>('GEMINI_API_KEY', ''),
-          config.get<string>('GEMINI_MODEL', 'gemini-2.5-flash'),
+          config.get<string>('GEMINI_MODEL', 'gemini-flash-latest'),
         ),
       inject: [ConfigService],
     },

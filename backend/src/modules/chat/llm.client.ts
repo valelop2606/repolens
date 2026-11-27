@@ -22,7 +22,7 @@ type FetchFn = typeof fetch;
 export class GeminiClient implements LlmClient {
   constructor(
     private readonly apiKey: string,
-    private readonly model = 'gemini-2.5-flash',
+    private readonly model = 'gemini-flash-latest',
     private readonly fetchFn: FetchFn = fetch,
   ) {}
 
