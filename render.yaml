@@ -17,7 +17,7 @@ services:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
       - key: FRONTEND_URL
-        value: https://repolens-web.onrender.com
+        value: https://repolens-web-nqo7.onrender.com
 
   - type: web
     name: repolens-web
@@ -31,4 +31,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://repolens-api.onrender.com/api
+        value: https://repolens-api-5ue1.onrender.com/api
