@@ -9,8 +9,12 @@ const styles = {
   container: {
     display: 'flex',
     height: '100%',
-    minHeight: 'calc(100vh - 64px)',
-    backgroundColor: '#f8fafc',
+    minHeight: 'calc(100vh - 5rem)',
+    backgroundColor: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
+    boxShadow: 'var(--shadow-sm)',
   } as React.CSSProperties,
   mainPanel: {
     flex: 1,
@@ -20,15 +24,15 @@ const styles = {
   codePanel: {
     width: '360px',
     minWidth: '360px',
-    backgroundColor: '#ffffff',
-    borderLeft: '1px solid #e2e8f0',
+    backgroundColor: 'var(--surface)',
+    borderLeft: '1px solid var(--border)',
     overflowY: 'auto',
     padding: '1.5rem',
   } as React.CSSProperties,
   title: {
     fontSize: '1.5rem',
     fontWeight: 600,
-    color: '#1e293b',
+    color: 'var(--text)',
     margin: '0 0 1.5rem 0',
   } as React.CSSProperties,
   selectorContainer: {
@@ -37,7 +41,7 @@ const styles = {
   label: {
     fontSize: '0.75rem',
     fontWeight: 600,
-    color: '#64748b',
+    color: 'var(--muted)',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
     marginBottom: '0.5rem',
@@ -48,10 +52,10 @@ const styles = {
     maxWidth: '480px',
     padding: '0.625rem 1rem',
     fontSize: '0.875rem',
-    border: '1px solid #e2e8f0',
+    border: '1px solid var(--border)',
     borderRadius: '6px',
-    backgroundColor: '#ffffff',
-    color: '#1e293b',
+    backgroundColor: 'var(--surface)',
+    color: 'var(--text)',
     cursor: 'pointer',
     outline: 'none',
   } as React.CSSProperties,
@@ -69,23 +73,23 @@ const styles = {
   stepConnector: {
     width: '2px',
     height: '24px',
-    backgroundColor: '#cbd5e1',
+    backgroundColor: 'var(--border-strong)',
     marginLeft: '18px',
   } as React.CSSProperties,
   stepDot: {
     width: '12px',
     height: '12px',
     borderRadius: '50%',
-    border: '2px solid #3b82f6',
-    backgroundColor: '#ffffff',
+    border: '2px solid var(--accent)',
+    backgroundColor: 'var(--surface)',
     flexShrink: 0,
   } as React.CSSProperties,
   stepDotResolved: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: 'var(--accent)',
   } as React.CSSProperties,
   stepDotUnresolved: {
-    borderColor: '#94a3b8',
-    backgroundColor: '#f1f5f9',
+    borderColor: 'var(--subtle)',
+    backgroundColor: 'var(--surface-2)',
   } as React.CSSProperties,
   stepContent: {
     display: 'flex',
@@ -94,23 +98,23 @@ const styles = {
     padding: '0.5rem 0.75rem',
     borderRadius: '6px',
     fontSize: '0.875rem',
-    color: '#1e293b',
+    color: 'var(--text)',
     cursor: 'pointer',
     border: '1px solid transparent',
     transition: 'background-color 0.15s',
   } as React.CSSProperties,
   stepContentActive: {
-    backgroundColor: '#eff6ff',
-    border: '1px solid #bfdbfe',
+    backgroundColor: 'var(--accent-soft)',
+    border: '1px solid var(--accent-border)',
   } as React.CSSProperties,
   stepLink: {
-    color: '#3b82f6',
+    color: 'var(--accent)',
     textDecoration: 'underline',
     cursor: 'pointer',
     fontSize: '0.875rem',
   } as React.CSSProperties,
   stepUnresolved: {
-    color: '#94a3b8',
+    color: 'var(--subtle)',
     fontStyle: 'italic',
   } as React.CSSProperties,
   layerBadge: {
@@ -119,23 +123,23 @@ const styles = {
     borderRadius: '4px',
     fontSize: '0.6875rem',
     fontWeight: 600,
-    color: '#ffffff',
+    color: '#fff',
     textTransform: 'uppercase',
     letterSpacing: '0.03em',
   } as React.CSSProperties,
   codePanelTitle: {
     fontSize: '0.875rem',
     fontWeight: 600,
-    color: '#1e293b',
+    color: 'var(--text)',
     marginBottom: '0.75rem',
   } as React.CSSProperties,
   codeSnippet: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: 'var(--surface-2)',
     borderRadius: '6px',
     padding: '1rem',
     fontSize: '0.8125rem',
-    fontFamily: 'monospace',
-    color: '#334155',
+    fontFamily: 'var(--mono)',
+    color: 'var(--text-2)',
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-all',
   } as React.CSSProperties,
@@ -144,7 +148,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
-    color: '#94a3b8',
+    color: 'var(--subtle)',
     fontSize: '1rem',
   } as React.CSSProperties,
 };
@@ -157,7 +161,7 @@ const layerColors: Record<string, string> = {
   'controller': '#22c55e',
   'service': '#f59e0b',
   'database': '#ef4444',
-  'response': '#64748b',
+  'response': 'var(--muted)',
 };
 
 // --- Helper: determine if a component is a page/screen ---
@@ -634,7 +638,7 @@ const FeatureFlowView: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
+          <div style={{ color: 'var(--subtle)', fontSize: '0.875rem' }}>
             Select a component or endpoint above to trace its feature flow.
           </div>
         )}
@@ -646,14 +650,14 @@ const FeatureFlowView: React.FC = () => {
         {activeStepInfo ? (
           <div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>FILE</span>
-              <div style={{ fontSize: '0.8125rem', color: '#1e293b', marginTop: '0.25rem', wordBreak: 'break-all' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', fontWeight: 600 }}>FILE</span>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text)', marginTop: '0.25rem', wordBreak: 'break-all' }}>
                 {activeStepInfo.file}
               </div>
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>LINE</span>
-              <div style={{ fontSize: '0.8125rem', color: '#1e293b', marginTop: '0.25rem' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', fontWeight: 600 }}>LINE</span>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text)', marginTop: '0.25rem' }}>
                 {activeStepInfo.line}
               </div>
             </div>
@@ -662,7 +666,7 @@ const FeatureFlowView: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div style={{ color: '#94a3b8', fontSize: '0.8125rem' }}>
+          <div style={{ color: 'var(--subtle)', fontSize: '0.8125rem' }}>
             Click a flow step to see its source file and line number.
           </div>
         )}

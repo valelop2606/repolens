@@ -53,7 +53,7 @@ function saveCompletedStages(sessionId: string | null, completed: Set<string>): 
 
 function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.ReactNode {
   if (!kb) {
-    return <p style={{ color: '#64748b' }}>No knowledge base available.</p>;
+    return <p style={{ color: 'var(--muted)' }}>No knowledge base available.</p>;
   }
 
   switch (stageId) {
@@ -67,13 +67,13 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
           {technologies.length > 0 ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
               {technologies.map((tech) => (
-                <span key={tech.name} style={{ padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: '#e0f2fe', fontSize: '0.8rem' }}>
+                <span key={tech.name} style={{ padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: 'var(--accent-soft)', fontSize: '0.8rem' }}>
                   {tech.name}
                 </span>
               ))}
             </div>
           ) : (
-            <p style={{ color: '#94a3b8' }}>No technologies detected.</p>
+            <p style={{ color: 'var(--subtle)' }}>No technologies detected.</p>
           )}
         </div>
       );
@@ -82,7 +82,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'architecture': {
       const { modules, dependencyGraph } = kb;
       if (modules.length === 0 && dependencyGraph.nodes.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>Architecture information is not available for this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>Architecture information is not available for this project.</p>;
       }
       return (
         <div>
@@ -98,14 +98,14 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'business-modules': {
       const { modules } = kb;
       if (modules.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>No business modules detected in this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>No business modules detected in this project.</p>;
       }
       return (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {modules.map((mod) => (
-            <li key={mod.id} style={{ marginBottom: '0.5rem', padding: '0.5rem', backgroundColor: '#f8fafc', borderRadius: '0.375rem', border: '1px solid #e2e8f0' }}>
+            <li key={mod.id} style={{ marginBottom: '0.5rem', padding: '0.5rem', backgroundColor: 'var(--bg)', borderRadius: '0.375rem', border: '1px solid var(--border)' }}>
               <strong>{mod.name}</strong>
-              <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>{mod.description}</p>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>{mod.description}</p>
             </li>
           ))}
         </ul>
@@ -121,7 +121,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
       );
 
       if (authModules.length === 0 && authEndpoints.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>No authentication layer detected in this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>No authentication layer detected in this project.</p>;
       }
 
       return (
@@ -149,7 +149,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'core-features': {
       const { components } = kb;
       if (components.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>No React components detected in this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>No React components detected in this project.</p>;
       }
       return (
         <div>
@@ -158,7 +158,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
             {components.slice(0, 10).map((c) => (
               <li key={c.id}>{c.name} ({c.type})</li>
             ))}
-            {components.length > 10 && <li style={{ color: '#64748b' }}>...and {components.length - 10} more</li>}
+            {components.length > 10 && <li style={{ color: 'var(--muted)' }}>...and {components.length - 10} more</li>}
           </ul>
         </div>
       );
@@ -167,7 +167,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'api': {
       const { endpoints } = kb;
       if (endpoints.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>No API endpoints detected in this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>No API endpoints detected in this project.</p>;
       }
       return (
         <div>
@@ -175,10 +175,10 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {endpoints.slice(0, 10).map((ep) => (
               <li key={ep.id} style={{ marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-                <span style={{ fontWeight: 600, color: '#2563eb' }}>{ep.method}</span> {ep.path}
+                <span style={{ fontWeight: 600, color: 'var(--accent-hover)' }}>{ep.method}</span> {ep.path}
               </li>
             ))}
-            {endpoints.length > 10 && <li style={{ color: '#64748b', fontSize: '0.875rem' }}>...and {endpoints.length - 10} more</li>}
+            {endpoints.length > 10 && <li style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>...and {endpoints.length - 10} more</li>}
           </ul>
         </div>
       );
@@ -187,7 +187,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'database': {
       const { entities } = kb;
       if (entities.length === 0) {
-        return <p style={{ color: '#94a3b8' }}>No database entities detected in this project.</p>;
+        return <p style={{ color: 'var(--subtle)' }}>No database entities detected in this project.</p>;
       }
       return (
         <div>
@@ -206,12 +206,12 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     case 'ready': {
       return (
         <div style={{ textAlign: 'center', padding: '1rem' }}>
-          <h3 style={{ color: '#16a34a', margin: '0 0 0.5rem' }}>Congratulations!</h3>
-          <p style={{ color: '#475569' }}>
+          <h3 style={{ color: 'var(--success)', margin: '0 0 0.5rem' }}>Congratulations!</h3>
+          <p style={{ color: 'var(--text-2)' }}>
             You have completed the Learning Journey for <strong>{kb.metadata.name}</strong>.
             You now have a high-level understanding of the project architecture, modules, APIs, and data layer.
           </p>
-          <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
+          <p style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>
             You are ready to start contributing to this codebase.
           </p>
         </div>
@@ -219,7 +219,7 @@ function renderStageContent(stageId: string, kb: KnowledgeBase | null): React.Re
     }
 
     default:
-      return <p style={{ color: '#64748b' }}>Unknown stage.</p>;
+      return <p style={{ color: 'var(--muted)' }}>Unknown stage.</p>;
   }
 }
 
@@ -254,16 +254,16 @@ const LearningJourneyView: React.FC = () => {
   if (!knowledgeBase) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-        <p style={{ color: '#64748b', fontSize: '1rem' }}>Loading project data...</p>
+        <p style={{ color: 'var(--muted)', fontSize: '1rem' }}>Loading project data...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '1rem' }}>
+    <div className="page fade-in">
       <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.75rem', color: '#1e293b' }}>Learning Journey</h1>
-        <p style={{ marginTop: '0.5rem', color: '#475569' }}>
+        <h1 style={{ margin: 0, fontSize: '1.75rem', color: 'var(--text)' }}>Learning Journey</h1>
+        <p style={{ marginTop: '0.5rem', color: 'var(--text-2)' }}>
           Walk through each layer of the project to build your understanding step by step.
         </p>
       </header>
@@ -271,8 +271,8 @@ const LearningJourneyView: React.FC = () => {
       {/* Progress Bar */}
       <section aria-labelledby="progress-heading" style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-          <h2 id="progress-heading" style={{ fontSize: '1rem', margin: 0, color: '#334155' }}>Progress</h2>
-          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#2563eb' }} aria-live="polite">
+          <h2 id="progress-heading" style={{ fontSize: '1rem', margin: 0, color: 'var(--text-2)' }}>Progress</h2>
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--accent-hover)' }} aria-live="polite">
             {progress}%
           </span>
         </div>
@@ -285,7 +285,7 @@ const LearningJourneyView: React.FC = () => {
           style={{
             width: '100%',
             height: '12px',
-            backgroundColor: '#e2e8f0',
+            backgroundColor: 'var(--border)',
             borderRadius: '6px',
             overflow: 'hidden',
           }}
@@ -294,7 +294,7 @@ const LearningJourneyView: React.FC = () => {
             style={{
               width: `${progress}%`,
               height: '100%',
-              backgroundColor: '#2563eb',
+              backgroundColor: 'var(--accent-hover)',
               borderRadius: '6px',
               transition: 'width 0.3s ease',
             }}
@@ -321,9 +321,9 @@ const LearningJourneyView: React.FC = () => {
                       gap: '0.75rem',
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      border: isSelected ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                      border: isSelected ? '2px solid var(--accent-hover)' : '1px solid var(--border)',
                       borderRadius: '0.5rem',
-                      backgroundColor: isSelected ? '#eff6ff' : isCompleted ? '#f0fdf4' : '#ffffff',
+                      backgroundColor: isSelected ? 'var(--accent-soft)' : isCompleted ? 'var(--success-soft)' : 'var(--surface)',
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontSize: '0.875rem',
@@ -338,8 +338,8 @@ const LearningJourneyView: React.FC = () => {
                         width: '28px',
                         height: '28px',
                         borderRadius: '50%',
-                        backgroundColor: isCompleted ? '#16a34a' : '#e2e8f0',
-                        color: isCompleted ? '#ffffff' : '#64748b',
+                        backgroundColor: isCompleted ? 'var(--success)' : 'var(--border)',
+                        color: isCompleted ? 'var(--surface)' : 'var(--muted)',
                         fontSize: '0.75rem',
                         fontWeight: 600,
                         flexShrink: 0,
@@ -347,7 +347,7 @@ const LearningJourneyView: React.FC = () => {
                     >
                       {isCompleted ? '\u2713' : idx + 1}
                     </span>
-                    <span style={{ color: '#1e293b', fontWeight: isSelected ? 600 : 400 }}>
+                    <span style={{ color: 'var(--text)', fontWeight: isSelected ? 600 : 400 }}>
                       {stage.label}
                     </span>
                   </button>
@@ -359,11 +359,11 @@ const LearningJourneyView: React.FC = () => {
 
         {/* Stage Detail */}
         <section aria-label="Stage details" style={{ flex: 1, minWidth: '300px' }}>
-          <div style={{ padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem', backgroundColor: '#ffffff' }}>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.125rem', color: '#1e293b' }}>
+          <div style={{ padding: '1.5rem', border: '1px solid var(--border)', borderRadius: '0.5rem', backgroundColor: 'var(--surface)' }}>
+            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.125rem', color: 'var(--text)' }}>
               {STAGES.find((s) => s.id === selectedStageId)?.label}
             </h3>
-            <p style={{ margin: '0 0 1rem', fontSize: '0.85rem', color: '#64748b' }}>
+            <p style={{ margin: '0 0 1rem', fontSize: '0.85rem', color: 'var(--muted)' }}>
               {STAGES.find((s) => s.id === selectedStageId)?.description}
             </p>
             <div>

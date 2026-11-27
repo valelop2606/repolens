@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useSession } from '../../upload/context/SessionContext';
 import { getDoc } from '../../upload/services/api.client';
+import Icon, { type IconName } from '../../../shared/ui/Icon';
 
 // --- Types ---
 
@@ -9,142 +10,39 @@ interface DocOption {
   type: string;
   filename: string;
   description: string;
+  icon: IconName;
 }
 
 const DOC_OPTIONS: DocOption[] = [
   {
     label: 'README',
     type: 'readme',
+    icon: 'doc',
     filename: 'README.md',
     description: 'Project overview, setup instructions, and getting started guide.',
   },
   {
     label: 'Architecture Summary',
     type: 'architecture',
+    icon: 'layers',
     filename: 'architecture.md',
     description: 'High-level architecture, modules, and system design overview.',
   },
   {
     label: 'API Docs',
     type: 'api',
+    icon: 'plug',
     filename: 'api-docs.md',
     description: 'API endpoints, request/response formats, and usage examples.',
   },
   {
     label: 'Learning Guide',
     type: 'learning-guide',
+    icon: 'route',
     filename: 'learning-guide.md',
     description: 'Step-by-step guide to understand and navigate the codebase.',
   },
 ];
-
-// --- Styles ---
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    minHeight: 'calc(100vh - 64px)',
-    backgroundColor: '#f8fafc',
-  } as React.CSSProperties,
-  header: {
-    padding: '1rem 2rem',
-    borderBottom: '1px solid #e2e8f0',
-    backgroundColor: '#ffffff',
-  } as React.CSSProperties,
-  headerTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#1e293b',
-    margin: 0,
-  } as React.CSSProperties,
-  headerSubtitle: {
-    fontSize: '0.8125rem',
-    color: '#64748b',
-    margin: '0.25rem 0 0 0',
-  } as React.CSSProperties,
-  content: {
-    flex: 1,
-    padding: '2rem',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '1.5rem',
-    alignContent: 'start',
-  } as React.CSSProperties,
-  card: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-  } as React.CSSProperties,
-  cardTitle: {
-    fontSize: '1rem',
-    fontWeight: 600,
-    color: '#1e293b',
-    margin: 0,
-  } as React.CSSProperties,
-  cardDescription: {
-    fontSize: '0.8125rem',
-    color: '#64748b',
-    margin: 0,
-    lineHeight: 1.5,
-  } as React.CSSProperties,
-  downloadButton: {
-    marginTop: 'auto',
-    padding: '0.625rem 1.25rem',
-    backgroundColor: '#3b82f6',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    cursor: 'pointer',
-    textAlign: 'center',
-  } as React.CSSProperties,
-  downloadButtonDisabled: {
-    backgroundColor: '#94a3b8',
-    cursor: 'not-allowed',
-  } as React.CSSProperties,
-  emptyState: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    minHeight: 'calc(100vh - 64px)',
-    color: '#94a3b8',
-    fontSize: '0.9375rem',
-    textAlign: 'center',
-    gap: '0.5rem',
-  } as React.CSSProperties,
-  errorBanner: {
-    margin: '1rem 2rem 0',
-    padding: '0.75rem 1rem',
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
-    borderRadius: '6px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  } as React.CSSProperties,
-  errorText: {
-    color: '#dc2626',
-    fontSize: '0.875rem',
-  } as React.CSSProperties,
-  errorDismiss: {
-    color: '#dc2626',
-    cursor: 'pointer',
-    border: 'none',
-    background: 'none',
-    fontSize: '1.25rem',
-    lineHeight: 1,
-    padding: '0 0.25rem',
-  } as React.CSSProperties,
-};
 
 // --- Component ---
 
@@ -191,54 +89,55 @@ const DocsView: React.FC = () => {
 
   if (!sessionId) {
     return (
-      <div style={styles.emptyState}>
-        <span style={{ fontSize: '2rem' }}>📄</span>
-        <p>No active session. Upload a repository first.</p>
+      <div style={{ display: 'grid', placeItems: 'center', minHeight: 300, color: 'var(--muted)' }}>
+        No active session. Upload a repository first.
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.headerTitle}>Documentation</h1>
-        <p style={styles.headerSubtitle}>
-          Download generated documentation for the analyzed repository.
-        </p>
-      </div>
+    <div className="page fade-in">
+      <header className="page-header">
+        <div>
+          <div className="eyebrow">Documentation</div>
+          <h1>Generated docs</h1>
+          <p>Markdown documents generated from the analysis. Download and drop them into your repo.</p>
+        </div>
+      </header>
 
       {error && (
-        <div style={styles.errorBanner} role="alert">
-          <span style={styles.errorText}>{error}</span>
-          <button
-            style={styles.errorDismiss}
-            onClick={handleDismissError}
-            aria-label="Dismiss error"
-          >
-            &times;
+        <div className="alert alert-danger" role="alert" style={{ marginBottom: '1.25rem', alignItems: 'center' }}>
+          <Icon name="alert" size={16} style={{ flexShrink: 0 }} />
+          <span style={{ flex: 1 }}>{error}</span>
+          <button className="btn btn-ghost" style={{ height: 28, padding: '0 0.375rem', color: 'inherit' }} onClick={handleDismissError} aria-label="Dismiss error">
+            <Icon name="x" size={15} />
           </button>
         </div>
       )}
 
-      <div style={styles.content}>
+      <div className="grid-2" style={{ gap: '1rem' }}>
         {DOC_OPTIONS.map((doc) => {
           const isLoading = loadingType === doc.type;
           const isDisabled = loadingType !== null;
 
           return (
-            <div key={doc.type} style={styles.card}>
-              <h2 style={styles.cardTitle}>{doc.label}</h2>
-              <p style={styles.cardDescription}>{doc.description}</p>
+            <div key={doc.type} className="card doc-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span className="doc-icon">
+                  <Icon name={doc.icon} size={18} />
+                </span>
+                <span className="filename">{doc.filename}</span>
+              </div>
+              <h2>{doc.label}</h2>
+              <p>{doc.description}</p>
               <button
-                style={{
-                  ...styles.downloadButton,
-                  ...(isDisabled ? styles.downloadButtonDisabled : {}),
-                }}
+                className="btn btn-secondary btn-block"
                 onClick={() => handleDownload(doc.type, doc.filename)}
                 disabled={isDisabled}
                 aria-label={`Download ${doc.label}`}
               >
-                {isLoading ? 'Downloading...' : `Download ${doc.filename}`}
+                {isLoading ? <span className="spinner" /> : <Icon name="download" size={16} />}
+                {isLoading ? 'Generating…' : 'Download'}
               </button>
             </div>
           );

@@ -1,4 +1,5 @@
 import React from 'react';
+import './styles/global.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { SessionProvider } from './features/upload/context/SessionContext';
 import UploadPage from './features/upload/pages/UploadPage';

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProject, uploadRepository } from '../services/api.client';
+import Icon, { type IconName } from '../../../shared/ui/Icon';
 
 const UploadPage: React.FC = () => {
   const navigate = useNavigate();
@@ -88,135 +89,175 @@ const UploadPage: React.FC = () => {
     [projectName, file, navigate],
   );
 
+  const features: { icon: IconName; title: string; text: string }[] = [
+    { icon: 'graph', title: 'Architecture map', text: 'Modules, dependencies and circular imports at a glance.' },
+    { icon: 'route', title: 'Guided learning', text: 'A step-by-step path through the codebase.' },
+    { icon: 'sparkles', title: 'AI assistant', text: 'Ask questions with answers cited to real code.' },
+  ];
+
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto', padding: '2rem' }}>
-      <h1>Codebase Understanding Platform</h1>
-      <p>Upload your repository to generate an interactive Knowledge Base.</p>
+    <div className="upload-page">
+      <header className="upload-nav">
+        <span className="brand" style={{ color: 'var(--text)' }}>
+          <span className="brand-mark">
+            <Icon name="logo" size={16} strokeWidth={2.2} />
+          </span>
+          Codebase Understanding
+        </span>
+      </header>
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="project-name" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Project Name
-          </label>
-          <input
-            id="project-name"
-            type="text"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            placeholder="Enter project name"
-            disabled={isUploading}
-            style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
-          />
-        </div>
+      <div className="upload-hero fade-in">
+        <span className="badge" style={{ marginBottom: '1.25rem' }}>
+          <span className="dot" style={{ background: 'var(--accent)' }} />
+          Static analysis + AI
+        </span>
+        <h1>Understand any codebase in minutes</h1>
+        <p className="lead">
+          Upload a repository and get an interactive knowledge base: architecture, feature flows,
+          a learning path, and an assistant that knows the code.
+        </p>
 
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          aria-label="Drop zone for zip file upload"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              fileInputRef.current?.click();
-            }
-          }}
-          style={{
-            border: `2px dashed ${isDragging ? '#4a90d9' : '#ccc'}`,
-            borderRadius: '8px',
-            padding: '2rem',
-            textAlign: 'center',
-            cursor: isUploading ? 'not-allowed' : 'pointer',
-            backgroundColor: isDragging ? '#f0f7ff' : '#fafafa',
-            marginBottom: '1rem',
-            transition: 'border-color 0.2s, background-color 0.2s',
-          }}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".zip"
-            onChange={handleFileChange}
-            disabled={isUploading}
-            style={{ display: 'none' }}
-            aria-hidden="true"
-          />
-          {file ? (
-            <p style={{ margin: 0 }}>
-              Selected: <strong>{file.name}</strong> ({(file.size / 1024 / 1024).toFixed(2)} MB)
-            </p>
-          ) : (
-            <p style={{ margin: 0, color: '#666' }}>
-              Drag & drop a <strong>.zip</strong> file here, or click to browse
-            </p>
-          )}
-        </div>
-
-        {progress !== null && (
+        <form onSubmit={handleSubmit} className="card upload-card" noValidate>
           <div style={{ marginBottom: '1rem' }}>
-            <div
-              style={{
-                width: '100%',
-                height: '8px',
-                backgroundColor: '#e0e0e0',
-                borderRadius: '4px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width: `${progress}%`,
-                  height: '100%',
-                  backgroundColor: '#4a90d9',
-                  transition: 'width 0.3s ease',
-                }}
-                role="progressbar"
-                aria-valuenow={progress}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              />
-            </div>
-            <p style={{ fontSize: '0.875rem', color: '#666', marginTop: '0.25rem' }}>
-              {progress}% uploaded
-            </p>
+            <label htmlFor="project-name" className="label">
+              Project name
+            </label>
+            <input
+              id="project-name"
+              type="text"
+              className="input"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              placeholder="e.g. payments-service"
+              disabled={isUploading}
+              autoComplete="off"
+            />
           </div>
-        )}
 
-        {error && (
           <div
-            role="alert"
-            style={{
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '4px',
-              padding: '0.75rem',
-              color: '#dc2626',
-              marginBottom: '1rem',
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => !isUploading && fileInputRef.current?.click()}
+            role="button"
+            tabIndex={0}
+            aria-label="Drop zone for zip file upload"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                fileInputRef.current?.click();
+              }
             }}
+            className={`dropzone${isDragging ? ' is-dragging' : ''}${file ? ' has-file' : ''}`}
+            aria-disabled={isUploading}
           >
-            {error}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".zip"
+              onChange={handleFileChange}
+              disabled={isUploading}
+              style={{ display: 'none' }}
+              aria-hidden="true"
+            />
+            {file ? (
+              <div className="file-chip">
+                <span className="file-icon">
+                  <Icon name="file" size={18} />
+                </span>
+                <span style={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
+                  <span className="file-name">{file.name}</span>
+                  <span className="file-size">{(file.size / 1024 / 1024).toFixed(2)} MB · ready to analyze</span>
+                </span>
+                {!isUploading && (
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    style={{ height: 30, padding: '0 0.5rem' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFile(null);
+                      if (fileInputRef.current) fileInputRef.current.value = '';
+                    }}
+                    aria-label="Remove file"
+                  >
+                    <Icon name="x" size={16} />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <span className="drop-icon">
+                  <Icon name="upload" size={20} />
+                </span>
+                <p style={{ margin: 0, fontWeight: 550 }}>
+                  Drop your <code>.zip</code> here or <span style={{ color: 'var(--accent)' }}>browse</span>
+                </p>
+                <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem', color: 'var(--muted)' }}>
+                  Zip the repository root. node_modules is not needed.
+                </p>
+              </>
+            )}
           </div>
-        )}
 
-        <button
-          type="submit"
-          disabled={isUploading || !projectName.trim() || !file}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            backgroundColor: isUploading ? '#9ca3af' : '#4a90d9',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: isUploading ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {isUploading ? 'Uploading...' : 'Upload & Analyze'}
-        </button>
-      </form>
+          {progress !== null && (
+            <div style={{ marginBottom: '1rem' }}>
+              <div className="progress-track">
+                <div
+                  className="progress-bar"
+                  style={{ transform: `scaleX(${progress / 100})` }}
+                  role="progressbar"
+                  aria-valuenow={progress}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                />
+              </div>
+              <div className="progress-meta">
+                <span>{progress < 100 ? 'Uploading' : 'Analyzing repository…'}</span>
+                <span style={{ fontVariantNumeric: 'tabular-nums' }}>{progress}%</span>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div role="alert" className="alert alert-danger" style={{ marginBottom: '1rem' }}>
+              <Icon name="alert" size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-lg btn-block"
+            disabled={isUploading || !projectName.trim() || !file}
+          >
+            {isUploading ? (
+              <>
+                <span className="spinner" />
+                Uploading…
+              </>
+            ) : (
+              <>
+                Upload & analyze
+                <span aria-hidden="true">→</span>
+              </>
+            )}
+          </button>
+        </form>
+
+        <ul className="feature-row">
+          {features.map((f) => (
+            <li key={f.title}>
+              <span className="feature-icon">
+                <Icon name={f.icon} size={17} />
+              </span>
+              <div>
+                <strong>{f.title}</strong>
+                <p>{f.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
