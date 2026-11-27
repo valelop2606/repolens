@@ -47,12 +47,15 @@ export class GeminiClient implements LlmClient {
     });
 
     // 429/503 are transient on the free tier (rate limit / model overloaded): retry with backoff.
-    let res = await request();
+    // Network errors ("fetch failed") are retried the same way.
+    const attempt = () => request().catch((err: unknown) => err as Error);
+    let res = await attempt();
     for (const delay of this.retryDelaysMs) {
-      if (res.status !== 429 && res.status !== 503) break;
+      if (!(res instanceof Error) && res.status !== 429 && res.status !== 503) break;
       await new Promise((r) => setTimeout(r, delay));
-      res = await request();
+      res = await attempt();
     }
+    if (res instanceof Error) throw res;
 
     if (!res.ok) {
       throw new Error(`Gemini API error ${res.status}: ${(await res.text()).slice(0, 300)}`);
