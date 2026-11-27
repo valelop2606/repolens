@@ -26,10 +26,21 @@ describe('GeminiClient', () => {
     expect(body.contents.map((c: { role: string }) => c.role)).toEqual(['user', 'model', 'user']);
   });
 
+  it('retries transient 503 responses and then succeeds', async () => {
+    const fetchFn = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 503, text: async () => 'overloaded' })
+      .mockResolvedValueOnce(okResponse('Recovered'));
+    const client = new GeminiClient('key', 'm', fetchFn as unknown as typeof fetch, [0, 0]);
+    await expect(client.complete('s', [{ role: 'user', content: 'q' }])).resolves.toBe('Recovered');
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+  });
+
   it('throws on non-2xx responses', async () => {
     const fetchFn = jest.fn().mockResolvedValue({ ok: false, status: 429, text: async () => 'quota' });
-    const client = new GeminiClient('key', 'm', fetchFn as unknown as typeof fetch);
+    const client = new GeminiClient('key', 'm', fetchFn as unknown as typeof fetch, [0, 0]);
     await expect(client.complete('s', [{ role: 'user', content: 'q' }])).rejects.toThrow('429');
+    expect(fetchFn).toHaveBeenCalledTimes(3);
   });
 
   it('throws when the API key is missing', async () => {

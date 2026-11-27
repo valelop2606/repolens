@@ -24,6 +24,7 @@ export class GeminiClient implements LlmClient {
     private readonly apiKey: string,
     private readonly model = 'gemini-flash-latest',
     private readonly fetchFn: FetchFn = fetch,
+    private readonly retryDelaysMs: number[] = [1000, 3000],
   ) {}
 
   async complete(system: string, messages: ChatTurn[]): Promise<string> {
@@ -32,7 +33,7 @@ export class GeminiClient implements LlmClient {
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.model)}:generateContent`;
-    const res = await this.fetchFn(url, {
+    const request = () => this.fetchFn(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': this.apiKey },
       body: JSON.stringify({
@@ -44,6 +45,14 @@ export class GeminiClient implements LlmClient {
         generationConfig: { maxOutputTokens: 1024, temperature: 0.3 },
       }),
     });
+
+    // 429/503 are transient on the free tier (rate limit / model overloaded): retry with backoff.
+    let res = await request();
+    for (const delay of this.retryDelaysMs) {
+      if (res.status !== 429 && res.status !== 503) break;
+      await new Promise((r) => setTimeout(r, delay));
+      res = await request();
+    }
 
     if (!res.ok) {
       throw new Error(`Gemini API error ${res.status}: ${(await res.text()).slice(0, 300)}`);
