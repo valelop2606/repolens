@@ -2,10 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { ChatHistory, ChatHistoryDocument } from './schemas/chat-history.schema';
 import {
@@ -14,8 +10,7 @@ import {
   KnowledgeBase,
   Message,
 } from '../../shared/types';
-
-export const BEDROCK_CLIENT = 'BEDROCK_CLIENT';
+import { LLM_CLIENT, LlmClient } from './llm.client';
 
 @Injectable()
 export class ChatService {
@@ -24,14 +19,14 @@ export class ChatService {
   constructor(
     private readonly configService: ConfigService,
     private readonly knowledgeService: KnowledgeService,
-    @Inject(BEDROCK_CLIENT)
-    private readonly bedrockClient: BedrockRuntimeClient,
+    @Inject(LLM_CLIENT)
+    private readonly llm: LlmClient,
     @InjectModel(ChatHistory.name)
     private readonly chatHistoryModel: Model<ChatHistoryDocument>,
   ) {}
 
   /**
-   * Builds the prompt payload for the Bedrock Claude Messages API.
+   * Builds the system prompt and chat turns sent to the LLM.
    * Public for testability (property tests).
    */
   public buildPrompt(
@@ -77,7 +72,7 @@ export class ChatService {
 
   /**
    * Ask the AI assistant a question about the codebase.
-   * Retrieves KB, builds prompt, calls Bedrock, extracts citations.
+   * Retrieves KB, builds prompt, calls the LLM, extracts citations.
    * On error: returns a structured error message (does not throw).
    */
   async ask(
@@ -89,28 +84,7 @@ export class ChatService {
       const kb = await this.knowledgeService.findBySession(sessionId);
       const { system, messages } = this.buildPrompt(kb, history, question);
 
-      const payload = {
-        anthropic_version: 'bedrock-2023-05-31',
-        max_tokens: 1024,
-        system,
-        messages,
-      };
-
-      const command = new InvokeModelCommand({
-        modelId: 'anthropic.claude-3-haiku-20240307-v1:0',
-        contentType: 'application/json',
-        accept: 'application/json',
-        body: JSON.stringify(payload),
-      });
-
-      const response = await this.bedrockClient.send(command);
-
-      // Parse Bedrock response
-      const responseBody = JSON.parse(
-        new TextDecoder().decode(response.body),
-      );
-      const responseText: string =
-        responseBody.content?.[0]?.text ?? '';
+      const responseText = await this.llm.complete(system, messages);
 
       // Extract entity citations by scanning response text for known entity names
       const citations = this.extractCitations(kb, responseText);
@@ -121,7 +95,7 @@ export class ChatService {
       };
     } catch (error) {
       this.logger.error(
-        `Bedrock invocation failed for session ${sessionId}`,
+        `LLM call failed for session ${sessionId}`,
         error instanceof Error ? error.stack : String(error),
       );
 

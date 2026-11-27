@@ -1,12 +1,12 @@
 // Mock the knowledge service module to avoid schema compilation issues
 jest.mock('../knowledge/knowledge.service');
 
-import { ChatService, BEDROCK_CLIENT } from './chat.service';
+import { ChatService } from './chat.service';
 import { KnowledgeBase, Message } from '../../shared/types';
 
 describe('ChatService', () => {
   let service: ChatService;
-  let mockBedrockClient: any;
+  let mockLlm: any;
   let mockKnowledgeService: any;
   let mockChatHistoryModel: any;
   let mockConfigService: any;
@@ -42,8 +42,8 @@ describe('ChatService', () => {
   };
 
   beforeEach(() => {
-    mockBedrockClient = {
-      send: jest.fn(),
+    mockLlm = {
+      complete: jest.fn(),
     };
     mockKnowledgeService = {
       findBySession: jest.fn().mockResolvedValue(sampleKb),
@@ -58,7 +58,7 @@ describe('ChatService', () => {
     service = new ChatService(
       mockConfigService,
       mockKnowledgeService,
-      mockBedrockClient,
+      mockLlm,
       mockChatHistoryModel,
     );
   });
@@ -120,13 +120,9 @@ describe('ChatService', () => {
 
   describe('ask', () => {
     it('should return structured response with citations on success', async () => {
-      const responseBody = {
-        content: [{ type: 'text', text: 'The AuthModule handles authentication. The LoginForm component uses /api/users endpoint.' }],
-      };
-
-      mockBedrockClient.send.mockResolvedValue({
-        body: new TextEncoder().encode(JSON.stringify(responseBody)),
-      });
+      mockLlm.complete.mockResolvedValue(
+        'The AuthModule handles authentication. The LoginForm component uses /api/users endpoint.',
+      );
 
       const result = await service.ask('session-1', [], 'Tell me about auth');
 
@@ -140,8 +136,8 @@ describe('ChatService', () => {
       );
     });
 
-    it('should return structured error on Bedrock failure (not throw)', async () => {
-      mockBedrockClient.send.mockRejectedValue(new Error('Service unavailable'));
+    it('should return structured error on LLM failure (not throw)', async () => {
+      mockLlm.complete.mockRejectedValue(new Error('Service unavailable'));
 
       const result = await service.ask('session-1', [], 'Question');
 

@@ -13,7 +13,7 @@ Onboarding onto an unfamiliar project is slow: no docs, outdated diagrams, and s
 
 - **Static analysis pipeline** — pluggable analyzers detect technologies, modules, NestJS endpoints, React components and database entities.
 - **Knowledge base** — analysis results stored per session and exposed through a REST API.
-- **AI assistant** — chat grounded on the knowledge base (Claude via AWS Bedrock), with conversation history and entity citations.
+- **AI assistant** — chat grounded on the knowledge base (Google Gemini, behind a provider-agnostic `LlmClient`), with conversation history and entity citations.
 - **Doc generator** — README, architecture overview, API reference and a learning guide generated from the analysis.
 - **Interactive UI** — dependency graph explorer, feature-flow view and a guided learning journey with progress tracking.
 - **Property-based testing** — core analyzers and the pipeline are tested with `fast-check`, not only example-based tests.
@@ -26,8 +26,7 @@ React (Vite) SPA ──► NestJS REST API ──► Analysis pipeline
                           │                 ├─ analyzers (tech, modules, endpoints, components, entities)
                           │                 └─ knowledge builder
                           ├─► MongoDB (projects, knowledge base, chat history)
-                          ├─► AWS S3 (uploaded repositories)
-                          └─► AWS Bedrock / Claude (AI assistant)
+                          └─► Gemini API (AI assistant)
 ```
 
 ## Tech stack
@@ -35,8 +34,8 @@ React (Vite) SPA ──► NestJS REST API ──► Analysis pipeline
 | Layer | Tech |
 |---|---|
 | Backend | NestJS 10, TypeScript, Mongoose, class-validator |
-| AI | AWS Bedrock (Claude) |
-| Storage | MongoDB, AWS S3 |
+| AI | Google Gemini (swappable `LlmClient`) |
+| Storage | MongoDB (Atlas free tier in production) |
 | Frontend | React 18, Vite, React Router, react-force-graph |
 | Testing | Jest, Vitest, fast-check (property-based), integration tests |
 
@@ -58,7 +57,7 @@ All routes are prefixed with `/api`.
 
 ## Getting started
 
-Requirements: Node 20+, MongoDB, and AWS credentials with S3 + Bedrock access.
+Requirements: Node 20+, MongoDB (local or free Atlas) and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 ```bash
 # backend
@@ -73,6 +72,12 @@ cp .env.example .env
 npm install
 npm run dev            # http://localhost:5173
 ```
+
+### Deploy (free tiers)
+
+- **Database:** MongoDB Atlas M0. Copy the connection string.
+- **API:** Render → New → Blueprint → this repo (uses [`render.yaml`](render.yaml)). Set `MONGODB_URI`, `GEMINI_API_KEY` and `FRONTEND_URL` (your Vercel URL).
+- **Frontend:** Vercel → import repo, root directory `frontend`, env `VITE_API_URL=https://<render-service>.onrender.com/api`.
 
 ### Tests
 
