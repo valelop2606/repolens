@@ -33,3 +33,6 @@ export class Project {
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
+
+// Expose `id` (string) in JSON responses; the frontend reads `project.id`.
+ProjectSchema.set('toJSON', { virtuals: true, versionKey: false });
