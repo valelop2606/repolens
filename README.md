@@ -3,7 +3,9 @@
 **Understand any codebase in minutes, not days.**
 Upload a repository and RepoLens builds an interactive knowledge base: architecture, modules, API endpoints, React components, database entities — plus an AI assistant that answers questions about the code and auto-generated documentation.
 
-> Built in a hackathon (Código Facilito) and actively being improved.
+**Live demo:** https://repolens-web-nqo7.onrender.com (free tier: the first request may take ~50 s to wake up)
+
+> Built with **spec-driven development in [Kiro](https://kiro.dev)** during Código Facilito's *Agent-based Software Development with Kiro* bootcamp, sponsored by AWS. Actively being improved.
 
 ## The problem
 
