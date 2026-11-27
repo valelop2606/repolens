@@ -17,14 +17,18 @@ const styles = {
   container: {
     display: 'flex',
     height: '100%',
-    minHeight: 'calc(100vh - 64px)',
-    backgroundColor: '#f8fafc',
+    minHeight: 'calc(100vh - 5rem)',
+    backgroundColor: 'var(--bg)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
+    boxShadow: 'var(--shadow-sm)',
   } as React.CSSProperties,
   sidebar: {
     width: '280px',
     minWidth: '280px',
-    backgroundColor: '#ffffff',
-    borderRight: '1px solid #e2e8f0',
+    backgroundColor: 'var(--surface)',
+    borderRight: '1px solid var(--border)',
     overflowY: 'auto',
     padding: '1rem 0',
   } as React.CSSProperties,
@@ -42,7 +46,7 @@ const styles = {
     userSelect: 'none',
     fontSize: '0.8125rem',
     fontWeight: 600,
-    color: '#64748b',
+    color: 'var(--muted)',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   } as React.CSSProperties,
@@ -50,33 +54,33 @@ const styles = {
     padding: '0.4rem 1rem 0.4rem 1.5rem',
     cursor: 'pointer',
     fontSize: '0.875rem',
-    color: '#334155',
+    color: 'var(--text-2)',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     borderLeft: '3px solid transparent',
   } as React.CSSProperties,
   listItemActive: {
-    backgroundColor: '#eff6ff',
-    borderLeft: '3px solid #3b82f6',
-    color: '#1d4ed8',
+    backgroundColor: 'var(--accent-soft)',
+    borderLeft: '3px solid var(--accent)',
+    color: 'var(--accent-hover)',
     fontWeight: 500,
   } as React.CSSProperties,
   listItemHover: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: 'var(--surface-2)',
   } as React.CSSProperties,
   emptyState: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
-    color: '#94a3b8',
+    color: 'var(--subtle)',
     fontSize: '1rem',
   } as React.CSSProperties,
   detailTitle: {
     fontSize: '1.5rem',
     fontWeight: 600,
-    color: '#1e293b',
+    color: 'var(--text)',
     margin: '0 0 1.5rem 0',
   } as React.CSSProperties,
   detailSection: {
@@ -85,14 +89,14 @@ const styles = {
   detailLabel: {
     fontSize: '0.75rem',
     fontWeight: 600,
-    color: '#64748b',
+    color: 'var(--muted)',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
     marginBottom: '0.25rem',
   } as React.CSSProperties,
   detailValue: {
     fontSize: '0.9375rem',
-    color: '#1e293b',
+    color: 'var(--text)',
   } as React.CSSProperties,
   badge: {
     display: 'inline-block',
@@ -107,13 +111,13 @@ const styles = {
     padding: '0.2rem 0.6rem',
     borderRadius: '9999px',
     fontSize: '0.75rem',
-    backgroundColor: '#e2e8f0',
-    color: '#475569',
+    backgroundColor: 'var(--border)',
+    color: 'var(--text-2)',
     marginRight: '0.4rem',
     marginBottom: '0.4rem',
   } as React.CSSProperties,
   link: {
-    color: '#3b82f6',
+    color: 'var(--accent)',
     cursor: 'pointer',
     textDecoration: 'underline',
     fontSize: '0.875rem',
@@ -126,8 +130,8 @@ const styles = {
   th: {
     textAlign: 'left' as const,
     padding: '0.5rem 0.75rem',
-    borderBottom: '2px solid #e2e8f0',
-    color: '#64748b',
+    borderBottom: '2px solid var(--border)',
+    color: 'var(--muted)',
     fontWeight: 600,
     fontSize: '0.75rem',
     textTransform: 'uppercase',
@@ -135,14 +139,14 @@ const styles = {
   } as React.CSSProperties,
   td: {
     padding: '0.5rem 0.75rem',
-    borderBottom: '1px solid #f1f5f9',
-    color: '#334155',
+    borderBottom: '1px solid var(--surface-2)',
+    color: 'var(--text-2)',
   } as React.CSSProperties,
 };
 
 const methodColors: Record<string, string> = {
   GET: '#22c55e',
-  POST: '#3b82f6',
+  POST: 'var(--accent)',
   PUT: '#f59e0b',
   PATCH: '#a855f7',
   DELETE: '#ef4444',
@@ -199,7 +203,7 @@ const ComponentDetail: React.FC<{
       <div style={styles.detailSection}>
         <div style={styles.detailLabel}>Component Type</div>
         <div style={styles.detailValue}>
-          <span style={{ ...styles.badge, backgroundColor: component.type === 'functional' ? '#3b82f6' : '#8b5cf6' }}>
+          <span style={{ ...styles.badge, backgroundColor: component.type === 'functional' ? 'var(--accent)' : '#8b5cf6' }}>
             {component.type}
           </span>
         </div>
@@ -208,7 +212,7 @@ const ComponentDetail: React.FC<{
       <div style={styles.detailSection}>
         <div style={styles.detailLabel}>Parent Components</div>
         {component.parents.length === 0 ? (
-          <div style={{ ...styles.detailValue, color: '#94a3b8' }}>None</div>
+          <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>None</div>
         ) : (
           <div>
             {component.parents.map((parentId) => (
@@ -220,7 +224,7 @@ const ComponentDetail: React.FC<{
                 {resolveComponentName(parentId)}
               </span>
             )).reduce<React.ReactNode[]>((acc, el, i) => {
-              if (i > 0) acc.push(<span key={`sep-p-${i}`} style={{ margin: '0 0.5rem', color: '#cbd5e1' }}>•</span>);
+              if (i > 0) acc.push(<span key={`sep-p-${i}`} style={{ margin: '0 0.5rem', color: 'var(--border-strong)' }}>•</span>);
               acc.push(el);
               return acc;
             }, [])}
@@ -231,7 +235,7 @@ const ComponentDetail: React.FC<{
       <div style={styles.detailSection}>
         <div style={styles.detailLabel}>Child Components</div>
         {component.children.length === 0 ? (
-          <div style={{ ...styles.detailValue, color: '#94a3b8' }}>None</div>
+          <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>None</div>
         ) : (
           <div>
             {component.children.map((childId) => (
@@ -243,7 +247,7 @@ const ComponentDetail: React.FC<{
                 {resolveComponentName(childId)}
               </span>
             )).reduce<React.ReactNode[]>((acc, el, i) => {
-              if (i > 0) acc.push(<span key={`sep-c-${i}`} style={{ margin: '0 0.5rem', color: '#cbd5e1' }}>•</span>);
+              if (i > 0) acc.push(<span key={`sep-c-${i}`} style={{ margin: '0 0.5rem', color: 'var(--border-strong)' }}>•</span>);
               acc.push(el);
               return acc;
             }, [])}
@@ -254,17 +258,17 @@ const ComponentDetail: React.FC<{
       <div style={styles.detailSection}>
         <div style={styles.detailLabel}>API Calls</div>
         {component.apiCalls.length === 0 ? (
-          <div style={{ ...styles.detailValue, color: '#94a3b8' }}>None</div>
+          <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>None</div>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {component.apiCalls.map((call, idx) => (
-              <li key={idx} style={{ marginBottom: '0.35rem', fontSize: '0.875rem', color: '#334155' }}>
+              <li key={idx} style={{ marginBottom: '0.35rem', fontSize: '0.875rem', color: 'var(--text-2)' }}>
                 {call.method && (
                   <span style={{ ...styles.badge, backgroundColor: methodColors[call.method.toUpperCase()] ?? '#6b7280', marginRight: '0.5rem' }}>
                     {call.method.toUpperCase()}
                   </span>
                 )}
-                <code style={{ backgroundColor: '#f1f5f9', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>{call.url}</code>
+                <code style={{ backgroundColor: 'var(--surface-2)', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>{call.url}</code>
               </li>
             ))}
           </ul>
@@ -296,7 +300,7 @@ const EndpointDetail: React.FC<{ endpoint: Endpoint }> = ({ endpoint }) => (
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>Middlewares</div>
       {endpoint.middlewares.length === 0 ? (
-        <div style={{ ...styles.detailValue, color: '#94a3b8' }}>None</div>
+        <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>None</div>
       ) : (
         <div>
           {endpoint.middlewares.map((mw, idx) => (
@@ -310,17 +314,17 @@ const EndpointDetail: React.FC<{ endpoint: Endpoint }> = ({ endpoint }) => (
       <div style={styles.detailLabel}>Service Function</div>
       {endpoint.serviceFunction ? (
         <div style={styles.detailValue}>
-          <code style={{ backgroundColor: '#f1f5f9', padding: '0.2rem 0.5rem', borderRadius: '3px' }}>
+          <code style={{ backgroundColor: 'var(--surface-2)', padding: '0.2rem 0.5rem', borderRadius: '3px' }}>
             {endpoint.serviceFunction}
           </code>
           {endpoint.serviceFile && (
-            <span style={{ color: '#64748b', marginLeft: '0.5rem', fontSize: '0.8125rem' }}>
+            <span style={{ color: 'var(--muted)', marginLeft: '0.5rem', fontSize: '0.8125rem' }}>
               ({endpoint.serviceFile})
             </span>
           )}
         </div>
       ) : (
-        <div style={{ ...styles.detailValue, color: '#94a3b8' }}>Not linked</div>
+        <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>Not linked</div>
       )}
     </div>
   </div>
@@ -333,7 +337,7 @@ const EntityDetail: React.FC<{ entity: Entity }> = ({ entity }) => (
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>ORM Type</div>
       <div style={styles.detailValue}>
-        <span style={{ ...styles.badge, backgroundColor: entity.ormType === 'mongoose' ? '#22c55e' : entity.ormType === 'sequelize' ? '#3b82f6' : '#6b7280' }}>
+        <span style={{ ...styles.badge, backgroundColor: entity.ormType === 'mongoose' ? '#22c55e' : entity.ormType === 'sequelize' ? 'var(--accent)' : '#6b7280' }}>
           {entity.ormType}
         </span>
       </div>
@@ -347,7 +351,7 @@ const EntityDetail: React.FC<{ entity: Entity }> = ({ entity }) => (
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>Fields</div>
       {entity.fields.length === 0 ? (
-        <div style={{ ...styles.detailValue, color: '#94a3b8' }}>No fields detected</div>
+        <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>No fields detected</div>
       ) : (
         <table style={styles.table}>
           <thead>
@@ -373,14 +377,14 @@ const EntityDetail: React.FC<{ entity: Entity }> = ({ entity }) => (
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>Relationships</div>
       {entity.relationships.length === 0 ? (
-        <div style={{ ...styles.detailValue, color: '#94a3b8' }}>No relationships</div>
+        <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>No relationships</div>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {entity.relationships.map((rel, idx) => (
-            <li key={idx} style={{ marginBottom: '0.4rem', fontSize: '0.875rem', color: '#334155' }}>
+            <li key={idx} style={{ marginBottom: '0.4rem', fontSize: '0.875rem', color: 'var(--text-2)' }}>
               <span style={styles.chip}>{rel.type}</span>
               <strong>{rel.targetEntity}</strong>
-              <span style={{ color: '#64748b', marginLeft: '0.5rem' }}>via {rel.field}</span>
+              <span style={{ color: 'var(--muted)', marginLeft: '0.5rem' }}>via {rel.field}</span>
             </li>
           ))}
         </ul>
@@ -405,13 +409,13 @@ const ModuleDetail: React.FC<{ module: Module }> = ({ module }) => (
 
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>Description</div>
-      <div style={styles.detailValue}>{module.description || <span style={{ color: '#94a3b8' }}>No description</span>}</div>
+      <div style={styles.detailValue}>{module.description || <span style={{ color: 'var(--subtle)' }}>No description</span>}</div>
     </div>
 
     <div style={styles.detailSection}>
       <div style={styles.detailLabel}>Dependencies</div>
       {module.dependencies.length === 0 ? (
-        <div style={{ ...styles.detailValue, color: '#94a3b8' }}>None</div>
+        <div style={{ ...styles.detailValue, color: 'var(--subtle)' }}>None</div>
       ) : (
         <div>
           {module.dependencies.map((dep, idx) => (
@@ -495,7 +499,7 @@ const ExplorerView: React.FC = () => {
       <nav style={styles.sidebar} aria-label="Explorer navigation">
         <CollapsibleSection title="Frontend" count={components.length}>
           {components.length === 0 ? (
-            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: '#94a3b8' }}>No components</div>
+            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: 'var(--subtle)' }}>No components</div>
           ) : (
             components.map((comp) => (
               <div
@@ -517,7 +521,7 @@ const ExplorerView: React.FC = () => {
 
         <CollapsibleSection title="Backend" count={endpoints.length}>
           {endpoints.length === 0 ? (
-            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: '#94a3b8' }}>No endpoints</div>
+            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: 'var(--subtle)' }}>No endpoints</div>
           ) : (
             endpoints.map((ep) => (
               <div
@@ -542,7 +546,7 @@ const ExplorerView: React.FC = () => {
 
         <CollapsibleSection title="Database" count={entities.length}>
           {entities.length === 0 ? (
-            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: '#94a3b8' }}>No entities</div>
+            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: 'var(--subtle)' }}>No entities</div>
           ) : (
             entities.map((ent) => (
               <div
@@ -564,7 +568,7 @@ const ExplorerView: React.FC = () => {
 
         <CollapsibleSection title="Architecture" count={modules.length}>
           {modules.length === 0 ? (
-            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: '#94a3b8' }}>No modules</div>
+            <div style={{ padding: '0.4rem 1.5rem', fontSize: '0.8125rem', color: 'var(--subtle)' }}>No modules</div>
           ) : (
             modules.map((mod) => (
               <div

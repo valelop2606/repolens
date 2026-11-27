@@ -1,20 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { useSession } from '../../upload/context/SessionContext';
 import type { Technology, Module, AnalysisWarning } from '../../../shared/types';
+import Icon, { type IconName } from '../../../shared/ui/Icon';
 
-// --- Color helpers ---
+// --- Color helpers (canvas + dots need literal colors) ---
 
 const confidenceColors: Record<Technology['confidence'], string> = {
-  high: '#22c55e',
-  medium: '#f59e0b',
-  low: '#6b7280',
+  high: '#059669',
+  medium: '#d97706',
+  low: '#94a3b8',
 };
 
 const severityColors: Record<AnalysisWarning['severity'], string> = {
-  info: '#3b82f6',
-  warning: '#f59e0b',
-  error: '#ef4444',
+  info: '#4f46e5',
+  warning: '#d97706',
+  error: '#dc2626',
 };
 
 // --- Sub-components ---
@@ -24,70 +25,86 @@ const ProjectHeader: React.FC<{ name: string; version: string; description: stri
   version,
   description,
 }) => (
-  <header style={{ marginBottom: '2rem' }}>
-    <h1 style={{ margin: 0, fontSize: '1.75rem', color: '#1e293b' }}>
-      {name} <span style={{ fontSize: '1rem', color: '#64748b', fontWeight: 400 }}>v{version}</span>
-    </h1>
-    {description && (
-      <p style={{ marginTop: '0.5rem', color: '#475569', fontSize: '1rem', lineHeight: 1.5 }}>
-        {description}
-      </p>
-    )}
+  <header className="page-header">
+    <div>
+      <div className="eyebrow">Overview</div>
+      <h1>
+        {name}{' '}
+        {version && (
+          <span className="badge" style={{ verticalAlign: 'middle', marginLeft: 6, fontFamily: 'var(--mono)' }}>
+            v{version}
+          </span>
+        )}
+      </h1>
+      {description && <p>{description}</p>}
+    </div>
   </header>
 );
 
+const StatTiles: React.FC<{ items: { icon: IconName; label: string; value: number }[] }> = ({ items }) => (
+  <div className="stat-grid">
+    {items.map((s) => (
+      <div key={s.label} className="card stat">
+        <div className="stat-icon">
+          <Icon name={s.icon} size={17} />
+        </div>
+        <div className="value">{s.value}</div>
+        <div className="label-sm">{s.label}</div>
+      </div>
+    ))}
+  </div>
+);
+
 const TechStackBadges: React.FC<{ technologies: Technology[] }> = ({ technologies }) => (
-  <section aria-labelledby="tech-stack-heading" style={{ marginBottom: '2rem' }}>
-    <h2 id="tech-stack-heading" style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '0.75rem' }}>
-      Technology Stack
+  <section aria-labelledby="tech-stack-heading" className="section">
+    <h2 id="tech-stack-heading" className="section-title">
+      Technology stack
+      <span className="legend">
+        <span><i style={{ background: confidenceColors.high, height: 6, width: 6, borderRadius: 6 }} />High</span>
+        <span><i style={{ background: confidenceColors.medium, height: 6, width: 6, borderRadius: 6 }} />Medium</span>
+        <span><i style={{ background: confidenceColors.low, height: 6, width: 6, borderRadius: 6 }} />Low</span>
+      </span>
     </h2>
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }} role="list" aria-label="Technologies">
-      {technologies.map((tech) => (
-        <span
-          key={tech.name}
-          role="listitem"
-          style={{
-            display: 'inline-block',
-            padding: '0.25rem 0.75rem',
-            borderRadius: '9999px',
-            backgroundColor: confidenceColors[tech.confidence],
-            color: '#fff',
-            fontSize: '0.8125rem',
-            fontWeight: 500,
-          }}
-          title={`Confidence: ${tech.confidence} — Detected by: ${tech.detectedBy}`}
-        >
-          {tech.name}
-        </span>
-      ))}
-    </div>
+    {technologies.length === 0 ? (
+      <p style={{ color: 'var(--muted)', margin: 0 }}>No technologies detected.</p>
+    ) : (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }} role="list" aria-label="Technologies">
+        {technologies.map((tech) => (
+          <span
+            key={tech.name}
+            role="listitem"
+            className="badge"
+            style={{ height: 28, padding: '0 0.75rem', fontSize: '0.8125rem' }}
+            title={`Confidence: ${tech.confidence} — Detected by: ${tech.detectedBy}`}
+          >
+            <span className="dot" style={{ background: confidenceColors[tech.confidence] }} />
+            {tech.name}
+          </span>
+        ))}
+      </div>
+    )}
   </section>
 );
 
 const ModuleList: React.FC<{ modules: Module[] }> = ({ modules }) => (
-  <section aria-labelledby="modules-heading" style={{ marginBottom: '2rem' }}>
-    <h2 id="modules-heading" style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '0.75rem' }}>
-      Modules
+  <section aria-labelledby="modules-heading" className="section">
+    <h2 id="modules-heading" className="section-title">
+      Modules <span className="count">{modules.length}</span>
     </h2>
     {modules.length === 0 ? (
-      <p style={{ color: '#64748b' }}>No modules detected.</p>
+      <p style={{ color: 'var(--muted)', margin: 0 }}>No modules detected.</p>
     ) : (
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      <ul className="grid-2" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {modules.map((mod) => (
-          <li
-            key={mod.id}
-            style={{
-              padding: '0.75rem 1rem',
-              marginBottom: '0.5rem',
-              backgroundColor: '#f8fafc',
-              borderRadius: '0.5rem',
-              border: '1px solid #e2e8f0',
-            }}
-          >
-            <strong style={{ color: '#1e293b' }}>{mod.name}</strong>
-            <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem', color: '#64748b' }}>
-              {mod.description}
-            </p>
+          <li key={mod.id} className="card module-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' }}>
+              <strong>{mod.name}</strong>
+              <span style={{ fontSize: '0.75rem', color: 'var(--subtle)', flexShrink: 0 }}>
+                {mod.files.length} files
+              </span>
+            </div>
+            {mod.rootPath && <div className="path">{mod.rootPath}</div>}
+            {mod.description && <p>{mod.description}</p>}
           </li>
         ))}
       </ul>
@@ -106,11 +123,26 @@ interface GraphLink {
   isCircular: boolean;
 }
 
+const GRAPH_HEIGHT = 420;
+
 const DependencyGraphCanvas: React.FC<{ modules: Module[]; nodes: string[]; edges: { from: string; to: string; isCircular: boolean }[] }> = ({
   modules,
   nodes,
   edges,
 }) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fgRef = useRef<any>(undefined);
+  const [width, setWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.floor(entry.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const graphData = useMemo(() => {
     const graphNodes: GraphNode[] = nodes.map((nodeId) => {
       const mod = modules.find((m) => m.id === nodeId);
@@ -128,49 +160,62 @@ const DependencyGraphCanvas: React.FC<{ modules: Module[]; nodes: string[]; edge
 
   if (nodes.length === 0) {
     return (
-      <p style={{ color: '#64748b' }}>No dependency graph available.</p>
+      <div className="card card-pad" style={{ color: 'var(--muted)', textAlign: 'center', padding: '2.5rem' }}>
+        No dependency graph available.
+      </div>
     );
   }
 
   return (
     <div
-      style={{
-        height: '400px',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        overflow: 'hidden',
-        backgroundColor: '#f8fafc',
-      }}
+      ref={wrapRef}
+      className="card graph-card"
+      style={{ height: GRAPH_HEIGHT }}
       aria-label="Dependency graph visualization"
       role="img"
     >
-      <ForceGraph2D
-        graphData={graphData}
-        nodeLabel={(node: GraphNode) => node.name}
-        linkColor={(link: GraphLink) => (link.isCircular ? '#ef4444' : '#94a3b8')}
-        linkDirectionalArrowLength={4}
-        linkDirectionalArrowRelPos={1}
-        nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
-          const label = node.name as string;
-          const fontSize = 12 / globalScale;
-          ctx.font = `${fontSize}px sans-serif`;
-          ctx.fillStyle = '#334155';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
+      {width > 0 && (
+        <ForceGraph2D
+          ref={fgRef}
+          graphData={graphData}
+          width={width}
+          cooldownTicks={80}
+          onEngineStop={() => {
+            const fg = fgRef.current;
+            if (!fg) return;
+            fg.zoomToFit(0, 80);
+            if (fg.zoom() > 2.2) fg.zoom(2.2, 0);
+          }}
+          height={GRAPH_HEIGHT}
+          backgroundColor="rgba(0,0,0,0)"
+          nodeLabel={(node: GraphNode) => node.name}
+          linkColor={(link: GraphLink) => (link.isCircular ? '#dc2626' : '#c3c9d6')}
+          linkWidth={(link: GraphLink) => (link.isCircular ? 1.6 : 1)}
+          linkDirectionalArrowLength={4}
+          linkDirectionalArrowRelPos={1}
+          nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
+            const label = node.name as string;
+            const fontSize = 11 / globalScale;
 
-          // Draw node circle
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, 5, 0, 2 * Math.PI);
-          ctx.fillStyle = '#4a90d9';
-          ctx.fill();
+            // Node: soft halo + solid core
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(79, 70, 229, 0.14)';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 4.5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#4f46e5';
+            ctx.fill();
 
-          // Draw label
-          ctx.fillStyle = '#334155';
-          ctx.fillText(label, node.x, node.y + 10);
-        }}
-        width={undefined}
-        height={400}
-      />
+            // Label
+            ctx.font = `500 ${fontSize}px Inter, system-ui, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#334155';
+            ctx.fillText(label, node.x, node.y + 10);
+          }}
+        />
+      )}
     </div>
   );
 };
@@ -179,19 +224,11 @@ const WarningPanel: React.FC<{ warnings: AnalysisWarning[] }> = ({ warnings }) =
   if (warnings.length === 0) return null;
 
   return (
-    <section aria-labelledby="warnings-heading" style={{ marginBottom: '2rem' }}>
-      <h2 id="warnings-heading" style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '0.75rem' }}>
-        Warnings
+    <section aria-labelledby="warnings-heading" className="section">
+      <h2 id="warnings-heading" className="section-title">
+        Analysis warnings <span className="count">{warnings.length}</span>
       </h2>
-      <div
-        role="alert"
-        style={{
-          backgroundColor: '#fffbeb',
-          border: '1px solid #fde68a',
-          borderRadius: '0.5rem',
-          padding: '1rem',
-        }}
-      >
+      <div role="alert" className="card" style={{ overflow: 'hidden' }}>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {warnings.map((warning, idx) => (
             <li
@@ -199,15 +236,15 @@ const WarningPanel: React.FC<{ warnings: AnalysisWarning[] }> = ({ warnings }) =
               style={{
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '0.5rem',
-                marginBottom: idx < warnings.length - 1 ? '0.5rem' : 0,
+                gap: '0.75rem',
+                padding: '0.75rem 1rem',
+                borderTop: idx === 0 ? 'none' : '1px solid var(--border)',
               }}
             >
               <span
                 style={{
-                  display: 'inline-block',
-                  width: '8px',
-                  height: '8px',
+                  width: 8,
+                  height: 8,
                   borderRadius: '50%',
                   backgroundColor: severityColors[warning.severity],
                   marginTop: '0.4rem',
@@ -215,10 +252,13 @@ const WarningPanel: React.FC<{ warnings: AnalysisWarning[] }> = ({ warnings }) =
                 }}
                 aria-hidden="true"
               />
-              <span style={{ fontSize: '0.875rem', color: '#1e293b' }}>
-                <strong>[{warning.code}]</strong> {warning.message}
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-2)', minWidth: 0 }}>
+                <code style={{ color: 'var(--text)', fontWeight: 500 }}>{warning.code}</code>{' '}
+                {warning.message}
                 {warning.file && (
-                  <span style={{ color: '#64748b', marginLeft: '0.5rem' }}>({warning.file})</span>
+                  <span style={{ display: 'block', color: 'var(--subtle)', fontFamily: 'var(--mono)', fontSize: '0.75rem', marginTop: 2 }}>
+                    {warning.file}
+                  </span>
                 )}
               </span>
             </li>
@@ -236,35 +276,43 @@ const UnderstandView: React.FC = () => {
 
   if (!knowledgeBase) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-        <p style={{ color: '#64748b', fontSize: '1rem' }}>Loading project data...</p>
+      <div style={{ display: 'grid', placeItems: 'center', minHeight: 300, color: 'var(--muted)' }}>
+        Loading project data…
       </div>
     );
   }
 
-  const { metadata, technologies, modules, dependencyGraph, warnings } = knowledgeBase;
+  const { metadata, technologies, modules, endpoints, components, entities, dependencyGraph, warnings } =
+    knowledgeBase;
+  const circular = dependencyGraph.edges.filter((e) => e.isCircular).length;
 
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+    <div className="page fade-in">
       <ProjectHeader name={metadata.name} version={metadata.version} description={metadata.description} />
+
+      <StatTiles
+        items={[
+          { icon: 'box', label: 'Modules', value: modules.length },
+          { icon: 'plug', label: 'API endpoints', value: endpoints.length },
+          { icon: 'layers', label: 'UI components', value: components.length },
+          { icon: 'db', label: 'Data entities', value: entities.length },
+        ]}
+      />
 
       <TechStackBadges technologies={technologies} />
 
-      <ModuleList modules={modules} />
-
-      <section aria-labelledby="dependency-graph-heading" style={{ marginBottom: '2rem' }}>
-        <h2
-          id="dependency-graph-heading"
-          style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '0.75rem' }}
-        >
-          Dependency Graph
+      <section aria-labelledby="dependency-graph-heading" className="section">
+        <h2 id="dependency-graph-heading" className="section-title">
+          Dependency graph
+          <span className="legend">
+            <span><i style={{ background: '#c3c9d6' }} />Import</span>
+            <span><i style={{ background: '#dc2626' }} />Circular{circular > 0 ? ` (${circular})` : ''}</span>
+          </span>
         </h2>
-        <DependencyGraphCanvas
-          modules={modules}
-          nodes={dependencyGraph.nodes}
-          edges={dependencyGraph.edges}
-        />
+        <DependencyGraphCanvas modules={modules} nodes={dependencyGraph.nodes} edges={dependencyGraph.edges} />
       </section>
+
+      <ModuleList modules={modules} />
 
       <WarningPanel warnings={warnings} />
     </div>
